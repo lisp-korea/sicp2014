@@ -28,7 +28,7 @@ How to
     * 생성된 key를 가신의 계정 Account Settings의 SSH Public Keys -> Add another public key에 등록합니다. 
 4. lisp-korea/sicp [repo][lispkorea-sicp-repo] 가져오기
 
-        $ git clone git@github.com:lisp-korea/sicp.git
+        $ git clone git@github.com:lisp-korea/sicp2014.git
         
 5. git user 설정
 
@@ -37,15 +37,16 @@ How to
 
 6. 개인 소스 올리기
 
-        $ cd ch01
+        $ cd <ID>
         $ cd 1.1
-        ex-1-1-<id>.lisp or ex-1-1-<id>.clj 식의 naming으로 소스 생성
+        ex-1-1.scm or ex-1-1.clj 식의 naming으로 소스 생성
         $ git add <filename>
         $ git commit -m "ex 1.1 by 누구누구"
         $ git push origin master    
 
 [SICP]: http://mitpress.mit.edu/sicp/
+[lispkorea]: http://www.lispkorea.org
 [lispkorea]: http://groups.google.com/group/lisp-korea
 [github]:http://github.com
 [Racket]:http://racket-lang.org/
-[lispkorea-sicp-repo]:http://github.com/lisp-korea/sicp
+[lispkorea-sicp-repo]:http://github.com/lisp-korea/sicp2014
