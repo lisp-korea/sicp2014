@@ -1,6 +1,20 @@
 # 2.2 계층 구조 데이터와 닫힘 성질 - 126p
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2
 
+* car, cdr - cons
+ -  constructs memory objects which hold two values or pointers to values.
+ - car, cdr란 이름이 붙은 까닭: "IBM 704"상에서 lisp를 구현하는데, 당시 "IBM 704"에서 사용하는 레지스터의 이름이 car, cdr이였다.
+ - 후에,대안이름 first와 rest란게 나왔으나 caar, cadr, cdadr등 중첩키워드를 대체하기에는 무리가 있었음.
+
+
+    [15 Address][15 Decrement][3 Prefix][3 Tag]
+    car (Contents of the Address part of Register number)
+    cdr (Contents of the Decrement part of Register number)
+    cpr (Contents of the Prefix part of Register number)
+    ctr (Contents of the Tag part of Register number)
+
+
+
 
 * cons 쌍이, 다른 cons 쌍의 원소가 될 수 있다.
 
@@ -18,6 +32,9 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2
 
 ## 2.2.1 차례열의 표현방법. - 128p
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
+
+* cons cell을 이용하여 만든 자료 구조 sequence : list
+
 
 ![](http://mitpress.mit.edu/sicp/full-text/book/ch2-Z-G-13.gif)
 
@@ -84,6 +101,9 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 
 
 * 2.17
+
+(빈 리스트가 아닌) 리스트를 인자로 받아, 그 리스트의 마지막 원소만으로 이루어진 리스트를 내놓는 last-pair.
+
 ```scheme
 (define (last-pair list)
   (let ((rst (rest list)))
@@ -100,7 +120,11 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 ```
 
 
+
 * 2.18
+
+리스트를 인자로 받아, 그 원소들의 순서를 뒤집는 reverse.
+
 ```scheme
 
 (define (reverse list)
@@ -117,7 +141,9 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 ```
 
 
+
 * 2.19
+
 ```scheme
 ;2.19-------------------------
 (define us-coins (list 50 25 10 5 1))
@@ -159,8 +185,21 @@ http://nosyu.pe.kr/1315
 
 
 * 2.20
+`.`을 활용, 여러 인자를 받는 것을 연습.
+하나 이상의 인자를 받고, 첫번째 인자가 홀수면 홀수들만 반환, 짝수면 짝수들만 반환하는 same-parity
 
-TODO(eunpyoung.kim)
+```scheme
+(define (same-parity fst . rst)
+  (if (odd? fst)
+      (filter odd? (cons fst rst))
+      (filter even? (cons fst rst))))
+
+(same-parity 1 2 3 4 5 6 7)
+;=> (1 3 5 7)
+
+(same-parity 2 3 4 5 6 7)
+;=> (2 4 6)
+```
 
 
 
@@ -175,6 +214,7 @@ map : 프로시저와, 리스트를 인자로 받아, 리스트의 각 원소마
           (map proc (rest items))))))
 ```
 
+`scale-list`를 `map`을 써서 구현.
 
 ```scheme
 (define (scale-list items factor)
@@ -185,13 +225,16 @@ map : 프로시저와, 리스트를 인자로 받아, 리스트의 각 원소마
 
 
 (define (scale-list items factor)
-  (map (lambda (x) (* x factor) items)))
+  (map (lambda (x) (* x factor)
+       items)))
 ```
 
 
 
 
 * 2.21
+
+square-list 구현.
 
 ```scheme
 (define (square x) (* x x))
@@ -210,6 +253,8 @@ map : 프로시저와, 리스트를 인자로 받아, 리스트의 각 원소마
 ```
 
 * 2.22
+
+앞선 `square-list`를 iterate형식으로 풀어쓰기.
 
 ```scheme
 처음부분은
@@ -251,6 +296,9 @@ list끼리 합쳐야 하는데 pair끼리 합쳐서 그렇다.
 
 
 * 2.23
+
+`map`처럼 sequence를 순회하되, 결과값으로 list를 반환하지 않아도 되는 `for-each`구현.
+
 ```scheme
 (define (for-each lambda-x list)
   (cond ((not (null? list))
@@ -264,8 +312,11 @@ list끼리 합쳐야 하는데 pair끼리 합쳐서 그렇다.
 ;>> 88
 ```
 
+
 ## 2.2.2 계층 구조. - 139p
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.2
+
+cons cell을 엮어, tree구조를 만들 수 있다.
 
 ```scheme
 (cons (list 1 2)
@@ -287,20 +338,28 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.2
 
 * 2.24
 
+```scheme
+(list 1
+  (list 2
+    (list 3 4)))
+```
+
+를 계산한다고 할때, 실행기가 계산한 값을 어떻게 찍어내는지?, 화살표구조로 나타내보면?, 나무꼴로 그려보면?
+
 http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
+
 
 * 2.25
 
+다음정의에서, 7을 뽑아내려면, car와 cdr을 어떻게 조합할 것인가?
+
 ```scheme
-;; (1 3 (5 7) 9)
-(define A (list 1 3 (list 5 7) 9))
-
-;; ((7))
-(define B (list (list 7)))
-
+(define A (list 1 3 (list 5 7) 9)) ; (1 3 (5 7) 9)
+(define B (list (list 7)))         ; ((7))
 
 ;; (1 (2 (3 (4 (5 (6 7))))))
 (define C (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7)))))))
+
 
 
 (car (cdr (car (cdr (cdr A)))))
@@ -315,6 +374,8 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 
 * 2.26
+
+다음 표현식 결과값 생각해보기.
 
 ```scheme
 (define x (list 1 2 3))
@@ -332,6 +393,8 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 
 * 2.27
+
+`reverse`프로시저를 수정하여, 리스트를 인자로 받는 `deep-reverse`프로시져 구현.
 
 ```scheme
 (define x (list (list 1 2) (list 3 4)))
