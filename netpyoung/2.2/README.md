@@ -4,7 +4,7 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2
 * car, cdr - cons
  -  constructs memory objects which hold two values or pointers to values.
  - car, cdr란 이름이 붙은 까닭: "IBM 704"상에서 lisp를 구현하는데, 당시 "IBM 704"에서 사용하는 레지스터의 이름이 car, cdr이였다.
- - 후에,대안이름 first와 rest란게 나왔으나 caar, cadr, cdadr등 중첩키워드를 대체하기에는 무리가 있었음.
+ - 후에, 대안이름 first와 rest란게 나왔으나 caar, cadr, cdadr등 중첩키워드를 대체하기에는 무리가 있었음.
 
 
     [15 Address][15 Decrement][3 Prefix][3 Tag]
@@ -33,7 +33,7 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2
 ## 2.2.1 차례열의 표현방법. - 128p
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 
-* cons cell을 이용하여 만든 자료 구조 sequence : list
+* cons cell을 이용하여 만든 자료 구조 sequence. list에 대해 설명함.
 
 
 ![](http://mitpress.mit.edu/sicp/full-text/book/ch2-Z-G-13.gif)
@@ -100,7 +100,7 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 
 
 
-* 2.17
+* 2.17 pass
 
 (빈 리스트가 아닌) 리스트를 인자로 받아, 그 리스트의 마지막 원소만으로 이루어진 리스트를 내놓는 last-pair.
 
@@ -142,7 +142,7 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.1
 
 
 
-* 2.19
+* 2.19 pass
 
 ```scheme
 ;2.19-------------------------
@@ -185,6 +185,7 @@ http://nosyu.pe.kr/1315
 
 
 * 2.20
+
 `.`을 활용, 여러 인자를 받는 것을 연습.
 하나 이상의 인자를 받고, 첫번째 인자가 홀수면 홀수들만 반환, 짝수면 짝수들만 반환하는 same-parity
 
@@ -252,7 +253,7 @@ square-list 구현.
 ;=> (1 4 9 16)
 ```
 
-* 2.22
+* 2.22 pass
 
 앞선 `square-list`를 iterate형식으로 풀어쓰기.
 
@@ -300,10 +301,12 @@ list끼리 합쳐야 하는데 pair끼리 합쳐서 그렇다.
 `map`처럼 sequence를 순회하되, 결과값으로 list를 반환하지 않아도 되는 `for-each`구현.
 
 ```scheme
-(define (for-each lambda-x list)
-  (cond ((not (null? list))
-         (lambda-x (car list))
-         (for-each lambda-x (cdr list)))))
+(define (for-each fn seq)
+  (if (null? seq)
+    nil
+    (let ()
+       (fn (car seq))
+       (for-each fn (cdr seq)))))
 
 (for-each (lambda (x) (newline) (display x))
           (list 57 321 88))
@@ -330,10 +333,10 @@ cons cell을 엮어, tree구조를 만들 수 있다.
 
 ```scheme
 (define (count-leaves x)
-  (cond ((null? x) 0)
+  (cond ((null? x)       0)
         ((not (pair? x)) 1)
-        (else (+ (count-leaves (car x)
-                 (count-leaves (cdr x)))))))
+        (else            (+ (count-leaves (car x)
+                            (count-leaves (cdr x)))))))
 ```
 
 * 2.24
@@ -349,7 +352,7 @@ cons cell을 엮어, tree구조를 만들 수 있다.
 http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 
-* 2.25
+* 2.25 pass
 
 다음정의에서, 7을 뽑아내려면, car와 cdr을 어떻게 조합할 것인가?
 
@@ -401,15 +404,15 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 ;=> ((1 2) (3 4))
 
 
-(define (reverse list-x)
-  (list (cadr list-x) (car list-x)))
+(define (reverse seq)
+  (list (cadr seq) (car seq)))
 
 (reverse x)
 ;=> ((3 4) (1 2))
 
-(define (deep-reverse list-x)
-  (list (reverse (car (reverse list-x)))
-        (reverse (cadr (reverse list-x)))))
+(define (deep-reverse seq)
+  (list (reverse (car (reverse seq)))
+        (reverse (cadr (reverse seq)))))
 
 (deep-reverse x)
 ;=> ((4 3) (2 1))
@@ -417,25 +420,28 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 
 * 2.28
+TODO(eunpyoung.kim)
+
 
 ```scheme
-(define x (list (list 1 2) (list 3 4)))
+(define X (list (list 1 2) (list 3 4)))
 ;=> ((1 2) (3 4))
 
 
-(define (fringe y)
-  (cond ((null? y) nil)
-        ((pair? y)
-          (append (fringe (car y))
-                  (fringe (cdr y))))
-        (else (list y))))
+(define (fringe x)
+  (cond ((null? x) nil)
+
+        ((pair? x) (append (fringe (car x))
+                           (fringe (cdr x))))
+
+        (else      (list y))))
 
 
-(fringe x)
+(fringe X)
 ;=> (1 2 3 4)
 
 
-(fringe (list x x))
+(fringe (list X X))
 ;=> (1 2 3 4 1 2 3 4)
 ```
 
@@ -503,7 +509,7 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 ```scheme
 (define (square-tree tree)
-  (cond ((null? tree) nil)
+  (cond ((null? tree)       nil)
         ((not (pair? tree)) (* tree tree))
         (else (cons (square-tree (car tree))
                     (square-tree (cdr tree))))))
@@ -650,7 +656,9 @@ http://qerub.se/clojure-macros-for-scheme
 
 
 
-* 2.33
+* 2.33 pass
+
+빈칸체우기
 
 ```scheme
 (define (accumulate op initial sequence)
@@ -698,7 +706,9 @@ http://qerub.se/clojure-macros-for-scheme
 ```
 
 
-* 2.34
+* 2.34 pass
+
+호너의 규칙
 
 ```scheme
 ;; ref: http://nosyu.pe.kr/1338
@@ -723,6 +733,8 @@ http://qerub.se/clojure-macros-for-scheme
 ```
 
 * 2.35
+
+accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
 
 ```scheme
 (define (accumulate op initial sequence)
@@ -759,6 +771,8 @@ http://qerub.se/clojure-macros-for-scheme
 
 * 2.36
 
+중첩 sequence를 인자로 받는 `accmulate-n정의.
+
 ```scheme
 (define (accumulate op initial sequence)
   (if (null? sequence)
@@ -792,7 +806,7 @@ http://qerub.se/clojure-macros-for-scheme
 ```
 
 
-* 2.37
+* 2.37 pass
 
 ```scheme
 (define (accumulate op initial sequence)
@@ -868,7 +882,8 @@ http://qerub.se/clojure-macros-for-scheme
   (if (null? sequence)
       initial
       (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
+          (accumulate op initial (cdr sequence))))
+)
 ;========================
 (define fold-right accumulate)
 
@@ -903,6 +918,8 @@ http://qerub.se/clojure-macros-for-scheme
 ```
 
 * 2.39
+
+2.3.8에 나온 `fold-right`, `fold-left`로 `reverse`프로시저 정의.
 
 ```scheme
 (define (accumulate op initial sequence)
@@ -980,12 +997,10 @@ n = 6
 ```
 
 
-```scheme
-)
-```
 
+* 2.40 pass
 
-* 2.40
+정수 n을 인자로 받아서, `1 <= j < j <= n`을 만족하는, (i,j)쌍의 차례열을 뽑아낼 수 있도록 `unique-pairs`프로시저 정의.
 
 
 ```scheme
@@ -1095,6 +1110,10 @@ n = 6
 
 * 2.41
 
+어떤 정수, n보다 작거나 n과 같은, 서로 다른 양의 정수 i, j, k가 있다고 할때, 그 합을 s라 할때.
+n과 s를 받아, (i, j, k)쌍을 뽑는 프로시져 구현.
+
+
 ```scheme
 (define (filter predicate sequence)
   (cond ((null? sequence) nil)
@@ -1145,7 +1164,7 @@ n = 6
 ;=> ((5 3 2) (5 4 1) (6 3 1))
 ```
 
-* 2.42, 2.43
+* 2.42, 2.43 pass
 
 ```scheme
 (define (1+ num) (+ num 1))
@@ -1224,7 +1243,7 @@ n = 6
 
 
 
-## 2.2.4 연습 : 그림 언어 - 165p
+## 2.2.4 연습 : 그림 언어 - 165p pass
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
 
 
