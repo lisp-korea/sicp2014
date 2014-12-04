@@ -7,12 +7,14 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2
  - 후에, 대안이름 first와 rest란게 나왔으나 caar, cadr, cdadr등 중첩키워드를 대체하기에는 무리가 있었음.
 
 
+```
     [15 Address][15 Decrement][3 Prefix][3 Tag]
+
     car (Contents of the Address part of Register number)
     cdr (Contents of the Decrement part of Register number)
     cpr (Contents of the Prefix part of Register number)
     ctr (Contents of the Tag part of Register number)
-
+```
 
 
 
@@ -420,7 +422,8 @@ http://wqzhang.wordpress.com/2009/06/19/sicp-exercise-2-24/
 
 
 * 2.28
-TODO(eunpyoung.kim)
+
+tree를 인자로 받아, leap들을 왼쪽에서 오른쪽으로 나열해놓는 리스트를 반환하는 `fringe`구현.
 
 
 ```scheme
@@ -434,7 +437,7 @@ TODO(eunpyoung.kim)
         ((pair? x) (append (fringe (car x))
                            (fringe (cdr x))))
 
-        (else      (list y))))
+        (else      (list x))))
 
 
 (fringe X)
@@ -446,7 +449,10 @@ TODO(eunpyoung.kim)
 ```
 
 
-* 2.29
+* 2.29 pass
+
+문제내용은 책 참조.  (144p)
+
 
 ```scheme
 ;; a
@@ -505,7 +511,7 @@ TODO(eunpyoung.kim)
   (cdr branch))
 ```
 
-* 2.30
+* 2.30 pass
 
 ```scheme
 (define (square-tree tree)
@@ -536,7 +542,7 @@ TODO(eunpyoung.kim)
 ;=> (1 (4 (9 16) 25) (36 49))
 ```
 
-* 2.31
+* 2.31 pass
 
 ```scheme
 (define (square x) (* x x))
@@ -558,7 +564,7 @@ TODO(eunpyoung.kim)
 ;=> (1 (4 (9 16) 25) (36 49))
 ```
 
-* 2.32
+* 2.32 pass
 
 ```scheme
 (define (subsets s)
@@ -583,12 +589,10 @@ TODO(eunpyoung.kim)
 ```
 
 ## 2.2.3 공통 인터페이스로써 차례열의 쓰임세. - 147p
+
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.3
 
 converntional interface(공통 인터페이스)의 쓰임세를 살펴보자.
-
-http://qerub.se/clojure-macros-for-scheme
-
 
 ![](http://mitpress.mit.edu/sicp/full-text/book/ch2-Z-G-17.gif)
 
@@ -642,6 +646,7 @@ http://qerub.se/clojure-macros-for-scheme
           tree)))))
 
 
+;; 만약 매크로가 있다면?
 (define (sum-odd-square tree)
   (->> tree
        (enumerate-tree)
@@ -679,7 +684,7 @@ http://qerub.se/clojure-macros-for-scheme
 ;=> 5
 
 
-;===============================
+;; ===============================
 
 
 (define (map-1 p sequence)
@@ -720,7 +725,7 @@ http://qerub.se/clojure-macros-for-scheme
           (accumulate op initial (cdr sequence)))))
 (define (square x) (* x x))
 
-;===============================
+;; ===============================
 
 (define (horner-eval x coefficient-sequence)
   (accumulate (lambda (this-coeff higher-terms)
@@ -743,7 +748,7 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
       (op (car sequence)
           (accumulate op initial (cdr sequence)))))
 
-;===============================
+;; ===============================
 
 (define (count-leaves x)
   (cond ((null? x) 0)
@@ -754,7 +759,7 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
 ;=> 7
 
 
-;===============================
+;; ===============================
 
 (define (count-leaves t)
   (accumulate (lambda (x y) (+ x y))
@@ -771,15 +776,16 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
 
 * 2.36
 
-중첩 sequence를 인자로 받는 `accmulate-n정의.
+중첩 sequence를 인자로 받는 `accmulate-n`정의.
 
 ```scheme
 (define (accumulate op initial sequence)
   (if (null? sequence)
       initial
       (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
-;===============================
+      (accumulate op initial (cdr sequence)))))
+
+;; ===============================
 (define s (list (list  1  2  3)
                 (list  4  5  6)
                 (list  7  8  9)
@@ -813,12 +819,15 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
   (if (null? sequence)
       initial
       (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
-;===============================
+      (accumulate op initial (cdr sequence)))))
+
+;; ===============================
+
 (define (get-front seqs)
   (if (pair? seqs)
       (cons (caar seqs) (get-front (cdr seqs)))
       nil))
+
 (define (get-end seqs)
   (if (pair? seqs)
       (cons (cdar seqs) (get-end (cdr seqs)))
@@ -829,7 +838,9 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
       nil
       (cons (accumulate op init (get-front seqs))
             (accumulate-n op init (get-end seqs)))))
-;===============================
+
+;; ===============================
+
 (define m (list (list 1 2 3 4)
                 (list 4 5 6 6)
                 (list 6 7 8 9)))
@@ -870,21 +881,24 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
 ;; 우오오 살짝 감동먹음.
 
 
-
-;; 음.. 이날의 나는 뭐에 감동을 먹었던 걸까?
+;; -_-;; 음.. 이 문제를 풀었을 때의 나는 뭐에 감동을 먹었던 걸까? 지금와서는 ... 별 감흥이 없는데..
 ```
 
 
 * 2.38
+
+`accumulate` 프로시저는 첫번째 원소와 나머지 원소의 계산 결과를 오른쪽으로 엮어가면서 계산하기 때문에 `fold-right`이라고 하기도 한다.
+
 
 ```scheme
 (define (accumulate op initial sequence)
   (if (null? sequence)
       initial
       (op (car sequence)
-          (accumulate op initial (cdr sequence))))
-)
-;========================
+          (accumulate op initial (cdr sequence)))))
+
+;; ========================
+
 (define fold-right accumulate)
 
 (define (fold-left op initial sequence)
@@ -896,19 +910,26 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
   (iter initial sequence))
 
 (fold-right / 1 (list 1 2 3))
+;; (/ 3 (/ 2 (/ 1 1)))
 ;=> 1 1/2
+
+
 (fold-left / 1 (list 1 2 3))
+;; (/ (/ (/ 1 1) 2) 3)
 ;=> 1/6
+
 
 (fold-right list nil (list 1 2 3))
 ;=> (1 (2 (3 ())))
 (fold-left list nil (list 1 2 3))
 ;=> (((() 1) 2) 3)
 
+
 (fold-right * 1 (list 1 2 3))
 ;=> 6
 (fold-left * 1 (list 1 2 3))
 ;=> 6
+
 
 (fold-right + 0 (list 1 2 3))
 ;=> 6
@@ -928,7 +949,7 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
       (op (car sequence)
           (accumulate op initial (cdr sequence)))))
 
-;========================
+;; ========================
 
 (define fold-right accumulate)
 
@@ -943,7 +964,8 @@ accumulate를 써서, 2.2.2절에 나온 `count-leaves`를 재정의.
 (define (reverse sequence)
   (fold-right (lambda (x y)
                 (append y (list x)))
-              nil sequence))
+                nil sequence))
+
 (reverse (list 1 2 3 4 5))
 ;=> (5 4 3 2 1)
 
@@ -970,16 +992,8 @@ n = 6
 
 
 ```scheme
-(->> (enuerate-interval 1 n)
-     (map (lambda (i)
-            (->> (enumerate-interval 1 (- i 1))
-                 (map (lambda (j) (list i j))))))
-     (accumulate append nil))
-
-
 (define (flatmap proc seq)
   (accumulate append nil (map proc seq)))
-
 
 (define (prime-sum? pair)
   (prime? (+ (car pair) (cadr pair))))
@@ -1006,6 +1020,7 @@ n = 6
 ```scheme
 (define (smallest-divisor n)
   (find-divisor n 2))
+
 (define (next test-divisor)
   (if (= (remainder test-divisor 2) 0)
       (+ test-divisor 1)
@@ -1024,25 +1039,33 @@ n = 6
 
 (define (prime? n)
   (= n (smallest-divisor n)))
-;========================
+
+;; ========================
+
 (define (filter predicate sequence)
   (cond ((null? sequence) nil)
         ((predicate (car sequence))
          (cons (car sequence)
                (filter predicate (cdr sequence))))
         (else (filter predicate (cdr sequence)))))
-;========================
+
+;; ========================
+
 (define (enumerate-interval low high)
   (if (> low high)
       nil
       (cons low (enumerate-interval (+ low 1) high))))
-;========================
+
+;; ========================
+
 (define (accumulate op initial sequence)
   (if (null? sequence)
       initial
       (op (car sequence)
           (accumulate op initial (cdr sequence)))))
-;========================
+
+;; ========================
+
 (define (flatmap proc seq)
   (accumulate append nil (map proc seq)))
 
@@ -1060,10 +1083,11 @@ n = 6
                   (map (lambda (j) (list i j))
                        (enumerate-interval 1 (- i 1))))
                 (enumerate-interval 1 n)))))
+
 (prime-sum-pairs 6)
 ;=> ((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))
 
-;========================
+;; ========================
 
 (define (permutations s)
   (if (null? s)
@@ -1072,6 +1096,7 @@ n = 6
                  (map (lambda (p) (cons x p))
                       (permutations (remove x s))))
                s)))
+
 (define (remove item sequence)
   (filter (lambda (x) (not (= x item)))
           sequence))
@@ -1081,6 +1106,7 @@ n = 6
 
 (define (make-pair pair)
   (list (car pair) (cadr pair)))
+
 (define (unique-pairs n)
   (map make-pair
        (flatmap
@@ -1088,6 +1114,7 @@ n = 6
           (map (lambda (j) (list i j))
                (enumerate-interval 1 (- i 1))))
         (enumerate-interval 1 n))))
+
 (unique-pairs 10)
 => ((2 1)
     (3 1) (3 2)
@@ -1103,6 +1130,7 @@ n = 6
   (map make-pair-sum
        (filter prime-sum?
                (unique-pairs n))))
+
 (prime-sum-pairs 6)
 ;=> ((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))
 ```
@@ -1137,7 +1165,9 @@ n과 s를 받아, (i, j, k)쌍을 뽑는 프로시져 구현.
 (define (flatmap proc seq)
   (accumulate append nil (map proc seq)))
 
-;========================
+
+;; ========================
+
 (define (make-triple-pair pair)
   (list (car pair) (cadr pair) (caddr pair)))
 
