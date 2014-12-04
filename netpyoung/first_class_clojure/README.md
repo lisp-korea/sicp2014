@@ -82,11 +82,17 @@
 * http://ropas.snu.ac.kr/~kwang/quote/strachey.html
 
 ```
-It has long been my personal view that the separation of practical and theoretical work is artificial and injurious. Much of the practical work done in computing, both in software and in hardware design, is unsound and clumsy because the people who do it have not any clear understanding of the fundamental design principles of their work. Most of the abstract mathematical and theoretical work is sterile because it has no point of contact with real computing. One of the central aims of the Programming Research Group as a teaching and research group has been to set up an atmosphere in which this separation cannot happen.
+ It has long been my personal view that the separation of practical and theoretical work is artificial and injurious.
+ Much of the practical work done in computing, both in software and in hardware design, is unsound and clumsy because the people who do it have not any clear understanding of the fundamental design principles of their work.
+ Most of the abstract mathematical and theoretical work is sterile because it has no point of contact with real computing.
+ One of the central aims of the Programming Research Group as a teaching and research group has been to set up an atmosphere in which this separation cannot happen.
 
 -----
 
 (번역: 이광근)
 
-나는 우리분야에서 이론과 실제를 떼어놓는 것은 부자연스러울 뿐 아니라 매우 해로운 것이라고 생각해 왔다. 전산분야의 실용적인 작업들은 (하드웨어와 소프트웨어를 막론하고) 무슨 문제를 어떻게 다루고 있는지에 대한 근본적인 이해가 없이 부지런하게만 건설된 것들이기 때문에 위태롭고 어설픈 성과들이 대부분이다. 이론분야에서 이루어놓은 성과들도 진짜 컴퓨팅 현실로 부터 너무나 초연해 있었던 까닭에 현실의 열매를 키워내는 비옥한 토양이 되지 못한 경우가 대부분이다. 우리의 [프로그래밍 연구 그룹]의 주요 목표는 이러한 이론과 실제의 불통이 발생할 수 없는 공부 풍토를 건설하는 것이다.
+ 나는 우리분야에서 이론과 실제를 떼어놓는 것은 부자연스러울 뿐 아니라 매우 해로운 것이라고 생각해 왔다.
+ 전산분야의 실용적인 작업들은 (하드웨어와 소프트웨어를 막론하고) 무슨 문제를 어떻게 다루고 있는지에 대한 근본적인 이해가 없이 부지런하게만 건설된 것들이기 때문에 위태롭고 어설픈 성과들이 대부분이다.
+ 이론분야에서 이루어놓은 성과들도 진짜 컴퓨팅 현실로 부터 너무나 초연해 있었던 까닭에 현실의 열매를 키워내는 비옥한 토양이 되지 못한 경우가 대부분이다.
+ 우리의 [프로그래밍 연구 그룹]의 주요 목표는 이러한 이론과 실제의 불통이 발생할 수 없는 공부 풍토를 건설하는 것이다.
 ```
