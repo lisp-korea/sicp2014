@@ -1001,12 +1001,17 @@ n = 6
 (define (make-pair-sum pair)
   (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
 
+(define (enumerate-interval low high)
+  (if (> low high)
+      nil
+      (cons low (enumerate-interval (+ low 1) high))))
+
 (define (prime-sum-pairs n)
-  (->> (enuerate-interval 1 n)
+  (->> (enumerate-interval 1 n)
        (flatmap (lambda (i)
                   (->> (enumerate-interval 1 (- i 1))
                        (map (lambda (j) (list i j))))))
-       (filter-prime-sum?)
+       (filter prime-sum?)
        (map make-pair-sum)))
 ```
 
@@ -1273,9 +1278,31 @@ n과 s를 받아, (i, j, k)쌍을 뽑는 프로시져 구현.
 
 
 
-## 2.2.4 연습 : 그림 언어 - 165p pass
+## 2.2.4 연습 : 그림 언어 - 165p
 http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
 
+
+```scheme
+(define (1- x)
+  (- x 1))
+
+(define wave einstein)
+
+(define wave2
+  (beside wave (flip-vert wave)))
+
+;; (define wave4
+;;   (below wave2 wave2))
+
+
+(define (flipped-pairs painter)
+  (let ((painter2 (beside painter (flip-vert painter))))
+    (below painter2 painter2)))
+
+
+(define wave4
+  (flipped-pairs wave))
+```
 
 * 2.44
 
@@ -1286,10 +1313,10 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
       (let ((smaller (up-split painter (1- n))))
         (below painter (beside smaller smaller)))))
 
-(paint (up-split  einstein 4))
+(paint (up-split wave 4))
 ```
 
-* 2.45
+* 2.45 pass
 
 ```scheme
 (define (split fn1 fn2)
@@ -1297,11 +1324,12 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
     (fn1 painter (fn2 painter painter))))
 
 (define right-split (split beside below))
+
 (define up-split (split below beside))
 ```
 
 
-* 2.46
+* 2.46 pass
 
 ```scheme
 (define (make-vect x y)
@@ -1330,7 +1358,7 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
   (vect-op * vect (make-vect n n)))
 ```
 
-* 2.47
+* 2.47 pass
 
 ```scheme
 (define (make-frame origin edge1 edge2)
@@ -1358,8 +1386,52 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
   (cddr frame))
 ```
 
-* 2.48
-* 2.49
-* 2.50
-* 2.51
-* 2.52
+* 2.48 pass
+* 2.49 pass
+* 2.50 pass
+* 2.51 pass
+
+### 단단하게 설계할 때 쓰는 언어 계층 (181p)
+
+* stratified design(다층설계)
+  - 단계별로 여러 언어를 쌓아올려서 복잡한 시스템을 층층히 짜맞추어 가는 방법.
+  - 각 층은 그 단계에서 썰 수 있는 기본 부품으로 구성.
+  - 한 층에서 만들어낸 부픔들은, 그 다음 층에서 쓸 기본 부품들이 됨.
+  - 이런 설계방식은, 프로그램을 `튼튼하게`짜는데 큰 도움이 된다.
+    - 설계가 조금 달라졌을시, 손보는게 적도록 프로그램이 짜여졌다는 것.
+  - [Lisp: A Language For Stratified Design - Author: Abelson, Harold; Sussman, Gerald Jay](http://dspace.mit.edu/handle/1721.1/6064)
+
+
+* ex)
+
+```
+    레지스터와 트렌지스터
+    >> AND, OR 게이트
+    >> 논리회로
+    >> 프로세서, 버스, 메모리 등등.
+    >> 컴퓨터 + 컴퓨터언어
+    >> 분산 시스템
+```
+
+* 2.52 pass
+
+
+## ETC
+
+```scheme
+#lang planet neil/sicp
+
+(define-syntax ->
+  (syntax-rules ()
+    ((_ ?form) ?form)
+    ((_ ?form (?f ?arg ...)) (?f ?form ?arg ...))
+    ((_ ?form ?f) (?f ?form))
+    ((_ ?form ?form2 . ?forms) (-> (-> ?form ?form2) . ?forms))))
+
+(define-syntax ->>
+  (syntax-rules ()
+    ((_ ?form) ?form)
+    ((_ ?form (?f ?arg ...)) (?f ?arg ... ?form))
+    ((_ ?form ?f) (?f ?form))
+    ((_ ?form ?form2 . ?forms) (->> (->> ?form ?form2) . ?forms))))
+```
