@@ -103,3 +103,36 @@ int main(void)
 - 중첩된 합수 정의
 - 익명 함수
 - 클로저 (closure)
+
+단, OS X의 clang에서는 block의 형태로 closure를 지원한다.
+
+```c
+#include <stdio.h>
+#include <Block.h>
+
+typedef int (^IntBlock)();
+
+IntBlock MakeCounter(int start, int increment)
+{
+  __block int i = start;
+
+  return Block_copy(^{
+      int ret = i;
+      i += increment;
+      return ret;
+    });
+}
+
+int main(void)
+{
+  IntBlock mycounter = MakeCounter(5, 2);
+  printf("1st call: %d\n", mycounter());
+  printf("2nd call: %d\n", mycounter());
+  printf("3rd call: %d\n", mycounter());
+
+  Block_release(mycounter);
+
+  return 0;
+}
+```
+(from wikipedia)
