@@ -6,6 +6,6 @@ sicp 스터디를 함에 있어서, first class function에 관한 주제에 대
 * [Clojure](https://github.com/lisp-korea/sicp2014/tree/master/netpyoung/first_class_clojure)
 * [PHP](http://www.phptherightway.com/pages/Functional-Programming.html)
 * [C#](http://blog.kusweet.com/?p=681)
-* TODO: 링크필요. [Swift]()
+* [Swift](https://github.com/lisp-korea/sicp2014/tree/master/seoh/firstclass.playground)
 * TODO: 링크필요. [Javascript]()
   - http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-14.html - Exercise 2.6.
