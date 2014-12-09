@@ -9,96 +9,98 @@
 
 ## C Implementation
 
-외국환 거래소에서는 시장 환율에 따라 달러와 타 국가의 화폐를 거래한다.
-모든 화폐는 달러로만 거래할 수 있다.
-예를 들어 원화를 엔화로 바꾸고 싶을 때에는 원화를 먼저 달러로 바꾼 후,
-다시 엔화로 바꾼다.
-
-단 원화의 경우, 창구 거래에 의한 환전 수수료가 붙어서
-달러로 바꿀 때에는 원/달러 기준 환율에 20원이 추가되고,
-달러에서 원화로 바꿀 때에는 20원이 차감된다.
+### 변수의 값으로 사용
 
 ```c
-#include <stdio.h>
-#include <string.h>
+typedef int (*operator_f)(int, int);
 
-int exchange_generic2usd(int money, int rate) { return (money / rate); }
-int exchange_usd2generic(int money, int rate) { return (money * rate); }
-int exchange_krw2usd(int money, int rate) { return (money / (rate+20)); }
-int exchange_usd2krw(int money, int rate) { return (money * (rate-20)); }
-
-int get_exchange_rate(const char *unit)
+int my_mul(int a, int b)
 {
-  if(unit == NULL) return 0;
-  if(!strcmp(unit, "KRW")) return 1114;
-  else if(!strcmp(unit, "JPY")) return 119;
-  return 1;
-}
-
-typedef int (*exchange_f)(int, int); // function pointer
-
-exchange_f get_exchange_to_usd(const char *unit)
-{
-  if(unit == NULL) return NULL;
-  if(!strcmp(unit, "KRW"))
-    return exchange_krw2usd;
-
-  else if(!strcmp(unit, "JPY"))
-    return exchange_generic2usd;
-
-  return NULL;
-}
-
-exchange_f get_exchange_from_usd(const char *unit)
-{
-  if(unit == NULL) return NULL;
-  if(!strcmp(unit, "KRW"))
-    return exchange_usd2krw;
-
-  else if(!strcmp(unit, "JPY"))
-    return exchange_usd2generic;
-
-  return NULL;
-}
-
-int currency_conversion(int money,
-    exchange_f from_func, int from_rate,
-    exchange_f to_func,   int to_rate)
-{
-  int m = from_func(money, from_rate);
-
-  if(to_func != NULL)
-    return to_func(m, to_rate);
-  else return m;
-}
-
-int currency_exchange(int money, const char *from, const char *to)
-{
-  int from_rate = get_exchange_rate(from),
-      to_rate   = get_exchange_rate(to);
-
-  exchange_f from_func = get_exchange_to_usd(from),
-             to_func   = get_exchange_from_usd(to);
-
-  return currency_conversion(money, from_func, from_rate, to_func, to_rate);
+  return (a*b);
 }
 
 int main(void)
 {
-  printf("10000 won is %d us$.\n", currency_exchange(10000, "KRW", "USD"));
-  printf("10000 won is %d yen.\n", currency_exchange(10000, "KRW", "JPY"));
+  operator_f mul = my_mul; // (1)
+  int a = 4, b = 5;
+  printf("%d x %d = %d\n", a, b, mul(a, b));
   return 0;
 }
 ```
 
-결과:
+### 프로시저의 인자로 사용
 
+```c
+typedef int (*operator_f)(int, int);
+
+int my_mul(int a, int b)
+{
+  return (a*b);
+}
+
+int op(int a, int b, operator_f operation)
+{
+  return operation(a, b);
+}
+
+int main(void)
+{
+  int a = 4, b = 5;
+  printf("%d x %d = %d\n", a, b, op(a, b, my_mul)); // (2)
+  return 0;
+}
 ```
-10000 won is 8 us$.
-10000 won is 952 yen.
+
+### 프로시저의 결과로 받기
+
+```c
+typedef int (*operator_f)(int, int);
+
+int my_mul(int a, int b)
+{
+  return (a*b);
+}
+
+operator_f get_op_mul(void)
+{
+  return my_mul; // (3)
+}
+
+int main(void)
+{
+  int a = 4, b = 5;
+  printf("%d x %d = %d\n", a, b, get_op_mul()(a, b));
+  return 0;
+}
+```
+
+### 데이터 구조 속에 집어 넣기
+
+```c
+typedef int (*operator_f)(int, int);
+
+typedef struct {
+  int a;
+  int b;
+  operator_f op;
+} calc_t;
+
+int my_mul(int a, int b)
+{
+  return (a*b);
+}
+
+int main(void)
+{
+  calc_t calc = { 4, 5, my_mul };
+  printf("%d x %d = %d\n", calc.a, calc.b, calc.op(calc.a, calc.b));
+  return 0;
+}
 ```
 
 ## Etc.
+
+C 언어는 다음 요구조건들을 충족하지 못한다 (C11 포함).
 
 - 중첩된 합수 정의
 - 익명 함수
