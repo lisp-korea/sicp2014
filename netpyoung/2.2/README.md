@@ -1435,3 +1435,47 @@ http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4
     ((_ ?form ?f) (?f ?form))
     ((_ ?form ?form2 . ?forms) (->> (->> ?form ?form2) . ?forms))))
 ```
+
+## MACRO
+
+clojure
+
+```clojure
+(ns t-test.core)
+
+(defn initialize [x]
+  (println "Initialized:" x))
+
+(defn dipose [x]
+  (println "Disposed:" x))
+
+
+(defmacro using [[var idisposeable] & body]
+  `(let [~,var ~idisposeable]
+     (do
+       (initialize ~,var)
+       ~@body
+       (dipose ~,var))))
+
+(using [x :x]
+       (println "HELLO WORLD1:" x)
+       (println "HELLO WORLD2:" x)
+       )
+
+;>> Initialized: :x
+;>> HELLO WORLD1: :x
+;>> HELLO WORLD2: :x
+;>> Disposed: :x
+;=> nil
+
+
+
+(macroexpand '(using [x :x]
+                     (println "HELLO WORLD:" x)))
+
+;; (let* [x :x]
+;;       (do
+;;         (t-test.core/initialize x)
+;;         (println "HELLO WORLD:" x)
+;;         (t-test.core/dipose x)))
+```
