@@ -8,11 +8,11 @@
 (define (halve x) (/ x 2))
 
 (define (mul a b)
-	(if (= b 0) 0
-		(mul-iter a 0 b)))
+  (if (= b 0) 0
+    (mul-iter a 0 b)))
 
 (define (mul-iter a p n)
-	(cond
-		((= n 0) p)
-		((even? n)  (mul-iter (double a) p  (halve n)))
-		(else (mul-iter a (+ p a)  (- n 1)))))
+  (cond
+    ((= n 0) p)
+    ((even? n)  (mul-iter (double a) p  (halve n)))
+    (else (mul-iter a (+ p a)  (- n 1)))))
