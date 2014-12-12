@@ -2,8 +2,8 @@
 
 (define (reverse a-list)
   (define (iter a-list r-list)
-    (if (null? (cdr a-list))
-        (cons (car a-list) r-list)
+    (if (null? a-list)
+        r-list
         (iter (cdr a-list) (cons (car a-list) r-list))))
   (iter a-list '()))
 
