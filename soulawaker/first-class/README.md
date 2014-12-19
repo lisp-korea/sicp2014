@@ -35,7 +35,7 @@ public class HigherOrderFuncSimulate {
    }
  
    public static FirstClassFuncSimulate speakFrankly() {
-       System.out.println("I'm not real Higher!");
+       System.out.println("I'm not a real Higher!");
 
        return new FirstClassFuncSimulate() {
            public void call() {
@@ -58,7 +58,7 @@ interface FirstClassFuncSimulate {
 * Java 8 이후의 경우 java.util.function과 lambda식 도입
   
   - Fucntion<InputType, ResultType>, BiFunction<Type1, Type2, Result> 등 함수 흉내를 내는 interface 제공
-  - 람다식은 syntatic sugar로 컴파일 전에 자바문법으로 자동 번역
+  - 람다식은 syntactic sugar로 컴파일 전에 자바문법으로 자동 번역
   - 예제는 스택오버플로우( http://stackoverflow.com/questions/15198979/lambda-expressions-and-higher-order-functions) 참조
 
   - 위의 예제에서 알 수 있는 것들
