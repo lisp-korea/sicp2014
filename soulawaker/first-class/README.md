@@ -1,23 +1,23 @@
 # [First Class Function]
 
 
-* SICP¿¡¼­ Á¦½ÃÇÏ´Â first class procedureÀÇ 4°¡Áö ¿ä¼Ò
+* SICPì—ì„œ ì œì‹œí•˜ëŠ” first class procedureì˜ 4ê°€ì§€ ìš”ì†Œ
 
-  - º¯¼öÀÇ °ªÀÌ µÉ ¼ö ÀÖ´Ù. ´Ù½Ã ¸»ÇØ, ÀÌ¸§ÀÌ ºÙÀ» ¼ö ÀÖ´Ù.
-  - ÇÁ·Î½ÃÀúÀÇ ÀÎÀÚ·Î ¾µ ¼ö ÀÖ´Ù.
-  - ÇÁ·Î½ÃÀúÀÇ °á°ú·Î ¸¸µé¾î Áú ¼ö ÀÖ´Ù.
-  - µ¥ÀÌÅÍ ±¸Á¶ ¼Ó¿¡ Áı¾î ³ÖÀ» ¼ö ÀÖ´Ù.
-
-
-* Wikipedia¿¡¼­ Á¦½ÃÇÏ´Â First Class Function(http://en.m.wikipedia.org/wiki/First-class_function)
-
-  - ¸Ó¸´±Û¿¡¼­ SICPÀÇ À§ 4°¡Áö Á¶°Ç ÀÎ¿ë
-  - ¾î¶²ÀÌ´Â ÀÍ¸íÇÔ¼ö Áö¿ø±îÁö ¿ä¼Ò·Î º»´Ù°í ÇÑ´Ù.
+  - ë³€ìˆ˜ì˜ ê°’ì´ ë  ìˆ˜ ìˆë‹¤. ë‹¤ì‹œ ë§í•´, ì´ë¦„ì´ ë¶™ì„ ìˆ˜ ìˆë‹¤.
+  - í”„ë¡œì‹œì €ì˜ ì¸ìë¡œ ì“¸ ìˆ˜ ìˆë‹¤.
+  - í”„ë¡œì‹œì €ì˜ ê²°ê³¼ë¡œ ë§Œë“¤ì–´ ì§ˆ ìˆ˜ ìˆë‹¤.
+  - ë°ì´í„° êµ¬ì¡° ì†ì— ì§‘ì–´ ë„£ì„ ìˆ˜ ìˆë‹¤.
 
 
-## Java¿¡¼­ÀÇ ÀÏ±ŞÇÔ¼ö
+* Wikipediaì—ì„œ ì œì‹œí•˜ëŠ” First Class Function(http://en.m.wikipedia.org/wiki/First-class_function)
 
-* Java 8 ÀÌÀüÀÇ °æ¿ì
+  - ë¨¸ë¦¿ê¸€ì—ì„œ SICPì˜ ìœ„ 4ê°€ì§€ ì¡°ê±´ ì¸ìš©
+  - ì–´ë–¤ì´ëŠ” ìµëª…í•¨ìˆ˜ ì§€ì›ê¹Œì§€ ìš”ì†Œë¡œ ë³¸ë‹¤ê³  í•œë‹¤.
+
+
+## Javaì—ì„œì˜ ì¼ê¸‰í•¨ìˆ˜
+
+* Java 8 ì´ì „ì˜ ê²½ìš°
 
 ```java
 public class HigherOrderFuncSimulate {
@@ -55,30 +55,30 @@ interface FirstClassFuncSimulate {
 }
 ```
 
-* Java 8 ÀÌÈÄÀÇ °æ¿ì java.util.function°ú lambda½Ä µµÀÔ
+* Java 8 ì´í›„ì˜ ê²½ìš° java.util.functionê³¼ lambdaì‹ ë„ì…
   
-  - Fucntion<InputType, ResultType>, BiFunction<Type1, Type2, Result> µî ÇÔ¼ö Èä³»¸¦ ³»´Â interface Á¦°ø
-  - ¶÷´Ù½ÄÀº syntatic sugar·Î ÄÄÆÄÀÏ Àü¿¡ ÀÚ¹Ù¹®¹ıÀ¸·Î ÀÚµ¿ ¹ø¿ª
-  - ¿¹Á¦´Â ½ºÅÃ¿À¹öÇÃ·Î¿ì( http://stackoverflow.com/questions/15198979/lambda-expressions-and-higher-order-functions) ÂüÁ¶
+  - Fucntion<InputType, ResultType>, BiFunction<Type1, Type2, Result> ë“± í•¨ìˆ˜ í‰ë‚´ë¥¼ ë‚´ëŠ” interface ì œê³µ
+  - ëŒë‹¤ì‹ì€ syntatic sugarë¡œ ì»´íŒŒì¼ ì „ì— ìë°”ë¬¸ë²•ìœ¼ë¡œ ìë™ ë²ˆì—­
+  - ì˜ˆì œëŠ” ìŠ¤íƒì˜¤ë²„í”Œë¡œìš°( http://stackoverflow.com/questions/15198979/lambda-expressions-and-higher-order-functions) ì°¸ì¡°
 
-  - À§ÀÇ ¿¹Á¦¿¡¼­ ¾Ë ¼ö ÀÖ´Â °Íµé
-  - 1. Function Å¸ÀÔÀÇ º¯¼ö¿¡ Function Å¸ÀÔ ÇÔ¼ö¸¦ ÀÎÀÚ·Î ³ÖÀ» ¼ö ÀÖ´Ù.
-  - 2. Collection ¿¬»ê¿¡¼­ stream ¶Ç´Â parallelStream È£Ãâ ÈÄÀÇ ¸Ş¼­µå¿¡ Function Å¸ÀÔ º¯¼ö È¤Àº ¶÷´Ù½ÄÀ» ÀÎÀÚ·Î ³ÖÀ» ¼ö ÀÖ´Ù.
-  - 3. Function Å¸ÀÔ ÇÔ¼ö¿¡¼­ ¶÷´Ù½ÄÀ» ¸®ÅÏÇÒ ¼ö ÀÖ´Ù.
-  - 4. ±×·¯¸é ÀÚ·á±¸Á¶¿¡ ÇÔ¼ö Áı¾î³Ö´Â °ÍÀº? ¾Æ·¡ ÄÚµå ÁÖ¼® ÂüÁ¶
+  - ìœ„ì˜ ì˜ˆì œì—ì„œ ì•Œ ìˆ˜ ìˆëŠ” ê²ƒë“¤
+  - 1. Function íƒ€ì…ì˜ ë³€ìˆ˜ì— Function íƒ€ì… í•¨ìˆ˜ë¥¼ ì¸ìë¡œ ë„£ì„ ìˆ˜ ìˆë‹¤.
+  - 2. Collection ì—°ì‚°ì—ì„œ stream ë˜ëŠ” parallelStream í˜¸ì¶œ í›„ì˜ ë©”ì„œë“œì— Function íƒ€ì… ë³€ìˆ˜ í˜¹ì€ ëŒë‹¤ì‹ì„ ì¸ìë¡œ ë„£ì„ ìˆ˜ ìˆë‹¤.
+  - 3. Function íƒ€ì… í•¨ìˆ˜ì—ì„œ ëŒë‹¤ì‹ì„ ë¦¬í„´í•  ìˆ˜ ìˆë‹¤.
+  - 4. ê·¸ëŸ¬ë©´ ìë£Œêµ¬ì¡°ì— í•¨ìˆ˜ ì§‘ì–´ë„£ëŠ” ê²ƒì€? ì•„ë˜ ì½”ë“œ ì£¼ì„ ì°¸ì¡°
 
 ```java
 public class HigherOrder {		
 	
    public static void main(String[] args) {
-      HashMap<String, Function<String, String>> funcMaps = initFunctionMaps();  // ³»¿ë Ãß°¡
+      HashMap<String, Function<String, String>> funcMaps = initFunctionMaps();  // ë‚´ìš© ì¶”ê°€
       Function<Integer, Long> addOne = add(1L);
 
       System.out.println(addOne.apply(1)); 
 
       Arrays.asList("test", "new")
 	.parallelStream()  
-	.map(funcMaps.get("stringFunc1"))  // ³»¿ë ¼öÁ¤  
+	.map(funcMaps.get("stringFunc1"))  // ë‚´ìš© ìˆ˜ì •  
 	.forEach(System.out::println);
    }
 
@@ -89,7 +89,7 @@ public class HigherOrder {
    private static Function<String, String> camelize = 
 	(str) -> str.substring(0, 1).toUpperCase() + str.substring(1);
 
-   // ÀÚ·á±¸Á¶¿¡ ÇÔ¼ö Áı¾î³Ö±â (³»¿ë Ãß°¡)			
+   // ìë£Œêµ¬ì¡°ì— í•¨ìˆ˜ ì§‘ì–´ë„£ê¸° (ë‚´ìš© ì¶”ê°€)			
    public static HashMap<String, Function<String, String>> initFunctionMaps(){
       HashMap<String, Function<String, String>> functionMaps
 	   = new HashMap<String, Function<String, String>>();
