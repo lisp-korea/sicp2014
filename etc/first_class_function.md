@@ -9,3 +9,4 @@ sicp 스터디를 함에 있어서, first class function에 관한 주제에 대
 * [Swift](https://github.com/lisp-korea/sicp2014/tree/master/seoh/firstclass.playground)
 * TODO: 링크필요. [Javascript]()
   - http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-14.html - Exercise 2.6.
+* [Java](https://github.com/lisp-korea/sicp2014/blob/master/soulawaker/first-class/README.md)
