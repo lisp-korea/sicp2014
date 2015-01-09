@@ -5,7 +5,7 @@
  적은 코드로 많은 일을 할 수 있다.
  <pre><code>
 """
- 출처 : http://software-carpentry.org/v4/python/funcobj.html
+ 출처 : [software-capentry.org](http://software-carpentry.org/v4/python/funcobj.html)
 """
 def combine_values(func, *values):
     current = values[0]
@@ -33,9 +33,9 @@ def simple(*args):
         print arg,
 
 def logit(func):
-    def wrapper(*args, **kwargs):
+    def wrapper(\*args, \*\*kwargs):
         print 'function %s called with args %s' % (func, args)
-        func(*args, **kwargs)
+        func(\*args, \*\*kwargs)
     return wrapper
 
 logged_simple = logit(simple)
@@ -52,7 +52,7 @@ simple = logit(simple)
 <pre><code>
 """
  functional-3-langs-atsyntax.py
- 출처 : https://thenewcircle.com/static/bookshelf/python_fundamentals_tutorial/functional_programming.html
+ 출처 : [thenewarticle.com](https://thenewcircle.com/static/bookshelf/python_fundamentals_tutorial/functional_programming.html)
 """
 import itertools
 
@@ -90,7 +90,7 @@ for claim in itertools.chain(best_functional('Haskell', 'Erlang'), [''],
  lambda도 익명 '함수' 니까 (당연히)값처럼 넘어간다.
  <pre><code>
 """
- 출처 : http://www.bogotobogo.com/python/python_fncs_map_filter_reduce.php
+ 출처 : [bototobogo.com](http://www.bogotobogo.com/python/python_fncs_map_filter_reduce.php)
 """
 def square(x):
         return (x\*\*2)
