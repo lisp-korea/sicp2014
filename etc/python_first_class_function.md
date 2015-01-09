@@ -93,9 +93,9 @@ for claim in itertools.chain(best_functional('Haskell', 'Erlang'), [''],
  출처 : http://www.bogotobogo.com/python/python_fncs_map_filter_reduce.php
 """
 def square(x):
-        return (x**2)
+        return (x\*\*2)
 def cube(x):
-        return (x**3)
+        return (x\*\*3)
 
 funcs = [square, cube]
 
