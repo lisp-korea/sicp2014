@@ -7,18 +7,19 @@
 (define (upper-bound x) (cdr x))
 
 (define (mul-interval x y)
-  (define (plus-p n)
-    (>= n 0))
-  (define (test-sign-type i)
-    (if (plus-p (lower-bound i))
-	(if (plus-p (upper-bound i))
+
+  (define (plus? n) (>= n 0))
+
+  (define (sign-type i)
+    (if (plus? (lower-bound i))
+	(if (plus? (upper-bound i))
 	    'plus-plus
 	    (error "invalid"))
-	(if (plus-p (upper-bound i))
+	(if (plus? (upper-bound i))
 	    'minus-plus
 	    'minus-minus)))
-  (let ((x-sign-type (test-sign-type x))
-	(y-sign-type (test-sign-type y)))
+  (let ((x-sign-type (sign-type x))
+	(y-sign-type (sign-type y)))
     (cond ((or (and (eq? x-sign-type 'plus-plus) (eq? y-sign-type 'plus-plus))
 	       (and (eq? x-sign-type 'minus-minus) (eq? y-sign-type 'minus-minus)))
 	   (make-interval (* (upper-bound x) (upper-bound y))
