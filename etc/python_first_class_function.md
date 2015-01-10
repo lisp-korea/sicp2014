@@ -20,10 +20,9 @@ def mul(x, y): return x * y
 print combine_values(add,[1,3,5])
 print combine_values(mul,[1,3,5])
  </code></pre>
- higher order function을 못쓴다면
-  - 할 일 개수 * data structure 개수: int 따로, string 따로 combine_values, add
- higher order function을 쓸 수 있으면
-  - 할 일 개수+ data structure 개수 : combine_values, add 같이 사용
+ combine\_value를 다시 짜지 않아도 더한 값(add), 곱한 값(mul) combine_value 가 가능하다. 
+ higher order function을 못쓴다면 combine\_value 안에 add, mul이 흡수되고 combine\_value\_added, combine\_value\_multed 를 만들어야 했을 것이다.
+ map,filter,reduce는 못나오겠..
 
 ## 그래서 closure, closure로 데코레이터 만들기
  [출처: thenewcircle.com](https://thenewcircle.com/static/bookshelf/python_fundamentals_tutorial/functional_programming.html)
