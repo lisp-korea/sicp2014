@@ -7,25 +7,25 @@
 """
  출처 : [software-capentry.org](http://software-carpentry.org/v4/python/funcobj.html)
 """
-def combine_values(func, *values):
+def combine_values(func, values):
     current = values[0]
     for i in range(1, len(values)):
         current = func(current, values[i])
     return current
 
-def add(x, y):
-    return x + y
+def add(x, y): return x + y
 
-print combine_values(add,1,3,5)
-print combine_values(add, 'long', ' long ', 'time ago')
+def mul(x, y): return x * y
+
+print combine_values(add,[1,3,5])
+print combine_values(mul,[1,3,5])
  </code></pre>
  higher order function을 못쓴다면
   - 할 일 개수 * data structure 개수: int 따로, string 따로 combine_values, add
  higher order function을 쓸 수 있으면
   - 할 일 개수+ data structure 개수 : combine_values, add 같이 사용
-  - 물론 *args 덕을 보긴 했지만, data structure 타입이 더 늘어나면..?
 
-## 그래서 closer, closer로 데코레이터 만들기
+## 그래서 closure, closure로 데코레이터 만들기
  [출처: thenewcircle.com](https://thenewcircle.com/static/bookshelf/python_fundamentals_tutorial/functional_programming.html)
  <pre><code>
 def simple(*args):
