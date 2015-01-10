@@ -112,5 +112,5 @@ namenum = lambda x: (x==1 and pr("one")) \
                   or (x==2 and pr("two")) \
                   or (pr("other"))
  </code></pre>
- <!>단순한 lambda를 만들기 전에 operator 모듈에 있나 체크.
- [파이썬 operator 모듈](https://docs.python.org/2/library/operator.html#module-operator)
+ 단순한 lambda를 만들기 전에 operator 모듈에 있나 체크하자 : [파이썬 operator 모듈](https://docs.python.org/2/library/operator.html#module-operator)
+ [데코레이터, 글 더 읽기](http://www.artima.com/weblogs/viewpost.jsp?thread=240808)
