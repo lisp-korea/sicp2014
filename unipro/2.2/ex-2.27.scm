@@ -1,7 +1,7 @@
 ;;; Exercise 2.27
 
 (define (deep-reverse x)
-  (define (leaf? y) (not (pair? x)))
+  (define (leaf? y) (not (pair? y)))
 
   (if (leaf? x)
       x

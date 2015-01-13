@@ -2,7 +2,7 @@
 (define nil '())
 
 (define (fringe x)
-  (define (leaf? y) (not (pair? x)))
+  (define (leaf? y) (not (pair? y)))
 
   (cond ((null? x) nil)
 	((leaf? x) (list x))
