@@ -1,9 +1,13 @@
-; ex 3.17
+; ex 3.17, 3.18
 
 (define (last-pair x)
   (if (null? (cdr x))
     x
     (last-pair (cdr x))))
+
+(define (make-circle! x)
+  (set-cdr! (last-pair x) x)
+  x)
 
 (define (append! x y)
   (set-cdr! (last-pair x) y))
@@ -48,3 +52,5 @@
 (count-pairs z2)
 ;;=> 3
 
+(count-pairs (make-circle! (list 'a 'b 'c)))
+;;=> 3

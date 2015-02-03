@@ -16,7 +16,7 @@
       (cond ((eq? m 'withdraw) withdraw)
             ((eq? m 'deposit) deposit)
             (else (error "Unknown request -- MAKE-ACCOUNT" m)))
-      (incorrect-passwd)))
+      incorrect-passwd))
   dispatch)
 
 (define acc (make-account 100 'my-passwd))
