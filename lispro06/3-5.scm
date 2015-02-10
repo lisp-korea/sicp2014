@@ -531,7 +531,12 @@ S
 ;; n번째 피보나치 수를 구하는데 필요한 덧셈의 수
 ;; - 지수 비례로 늘어난다는 사실을 밝혀라.
 
-
+;FIB로의 모든 용어는 이전의 두 측면의 합으로 먼저 계산된다.
+;FIB로 각각 이전 용어를 리콜 memoized 때문에 더 추가 할 필요가 없습니다.
+;따라서 첫 번째 후 각 용어 하나 추가를 사용합니다. 추가가 만들어집니다
+;(N-1, 0), 최대 (N = 0에서 시작) n 번째 기간을 계산합니다.
+;우리의 FIB를 memoized하지 않은 경우, 재 계산되는 각 용어를 필요로 FIB로의 이전 조건을 기억합니다.
+;지수 1 가산 - 계산하지 유일한 조건 1 및 제로이므로, FIB (N) 적어도 FIB (N)을 필요로한다.
 
 
 ;;;--------------------------< ex 3.58 >--------------------------
@@ -736,7 +741,15 @@ expected
 
 
 
+(define (div-series s1 s2)
+  (let ((c (stream-car s2)))
+    (if (= c 0)
+        (error "constant term of s2 can't be 0!")
+        (scale-stream (mul-series s1
+                                  (reciprocal-series (scale-stream s2 (/ 1 c))))
+                      (/ 1 c)))))
 
+(define tane-series (div-series sine-series cosine-series))
 
 
 
@@ -1375,7 +1388,38 @@ expected
 
 ;;;--------------------------< ex 3.70 >--------------------------
 ;;; p445,6
+(define (merge-weighted s1 s2 weight)
+        (cond ((stream-null? s1) s2)
+                  ((stream-null? s2) s1)
+                  (else
+                        (let ((cars1 (stream-car s1))
+                                  (cars2 (stream-car s2)))
+                          (cond ((< (weight cars1) (weight cars2))
+                                 (cons-stream cars1 
+                                                       (merge-weighted (stream-cdr s1) s2 weight)))
+                            ((= (weight cars1) (weight cars2)) 
+                                     (cons-stream cars1 
+                                                            (merge-weighted (stream-cdr s1) s2 weight)))
+                                (else (cons-stream cars2
+                                                        (merge-weighted s1 (stream-cdr s2) weight))))))))
 
+(define (weighted-pairs s1 s2 weight)
+        (cons-stream (list (stream-car s1) (stream-car s2))
+                        (merge-weighted (stream-map (lambda (x) (list (stream-car s1) x))
+                                                                           (stream-cdr s2))
+                                                 (weighted-pairs (stream-cdr s1) (stream-cdr s2) weight)
+                                                                 weight)))
+        
+
+(define weight1 (lambda (x) (+ (car x) (cadr x))))
+(define pairs1 (weighted-pairs integers integers weight1))
+        
+(define weight2 (lambda (x) (+ (* 2 (car x)) (* 3 (cadr x)) (* 5 (car x) (cadr x)))))   
+(define (divide? x y) (= (remainder y x) 0))
+(define stream235
+        (stream-filter (lambda (x) (not (or (divide? 2 x) (divide? 3 x) (divide? 5 x))))
+                                   integers))
+(define pairs2 (weighted-pairs stream235 stream235 weight2))
 
 ;;;---------------------------------
 (define (display-stream-n-weight s n weight)
@@ -1906,7 +1950,11 @@ expected
 ;; ----- = f(----, y)
 ;; d f^2      dt
 
-
+ (define(general-solve-2nd f y0 dy0 dt) 
+         (define y (integral (delay dy) y0 dt)) 
+         (define dy (integral (delay ddy) dy0 dt)) 
+         (define ddy (stream-map f dy y)) 
+         y) 
 
 ;;;--------------------------< ex 3.80 >--------------------------
 ;;; p456
@@ -2001,11 +2049,60 @@ expected
 
 ;;;--------------------------< ex 3.81 >--------------------------
 ;;; p461
-
+ (define (random-update x) 
+         (remainder (+ (* 13 x) 5) 24)) 
+ (define random-init (random-update (expt 2 32))) 
+  
+ ;; assume the operation 'generator and 'reset is a stream,  
+ ;; and if the command is 'generator, the element of 
+ ;; stream is a string, if the command is 'reset,  
+ ;; it is a pair whose first element is 'reset,  
+ ;; the other element is the reset value. 
+ (define (random-number-generator command-stream) 
+         (define random-number 
+                 (cons-stream random-init 
+                                 (stream-map (lambda (number command)  
+                                                                 (cond ((null? command) the-empty-stream) 
+                                                                           ((eq? command 'generator) 
+                                                                            (random-update number)) 
+                                                                           ((and (pair? command)  
+                                                                                    (eq? (car command) 'reset)) 
+                                                                            (cdr command)) 
+                                                                           (else  
+                                                                              (error "bad command -- " commmand)))) 
+                                                          random-number 
+                                                          command-stream))) 
+         random-number)
 
 ;;;--------------------------< ex 3.82 >--------------------------
 ;;; p461
-
+  
+ (define (random-in-range low high) 
+         (let ((range (- high low))) 
+                 (+ low (* (random) range)))) 
+ (define (random-number-pairs low1 high1 low2 high2) 
+         (cons-stream (cons (random-in-range low1 high1) (random-in-range low2 high2)) 
+                                 (random-number-pairs low1 high1 low2 high2))) 
+  
+ (define (monte-carlo experiment-stream passed failed) 
+         (define (next passed failed) 
+                 (cons-stream (/ passed (+ passed failed)) 
+                                          (monte-carlo (stream-cdr experiment-stream) 
+                                                                   passed 
+                                                                   failed))) 
+         (if (stream-car experiment-stream) 
+                 (next (+ passed 1) failed) 
+                 (next passed (+ failed 1)))) 
+  
+ (define (estimate-integral p x1 x2 y1 y2) 
+         (let ((area (* (- x2 x1) (- y2 y1))) 
+               (randoms (random-number-pairs x1 x2 y1 y2))) 
+                 (scale-stream (monte-carlo (stream-map p randoms) 0 0) area))) 
+  
+ ;; test. get the value of pi 
+ (define (sum-of-square x y) (+ (* x x) (* y y))) 
+ (define f (lambda (x) (not (> (sum-of-square (- (car x) 1) (- (cdr x) 1)) 1)))) 
+ (define pi-stream (estimate-integral f 0 2 0 2)) 
 
 
 
