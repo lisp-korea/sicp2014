@@ -22,6 +22,21 @@
 ;; 차례열을 리스트로 표현하면 쉽고도 깔끔하기는 하지만,
 ;; 시간과 공간 효율이 모두 떨어지는 대가를 치러야 한다.
 
+;413p
+;반복방식
+(define (sum-primes a b)
+  (define (iter count accum)
+    (cond ((> count b) accum)
+          ((prime? count) (iter (+ count 1) (+ count accum)))
+          (else (iter (+ count 1) accum))))
+  (iter a 0))
+  
+;차례열 연산
+  (define (sum-primes a b)
+  (accumulate +
+              0
+              (filter prime? (enumerate-interval a b))))
+
 ;; p414
 ;; 스트림은 리스트만큼 커다란 대가를 치르지 않으면서도 차례열 패러다임으로 프로그램을 짤 수 있도록 도와주는 멋진 기법이다.
 ;; 어떤 프로그램에서 스트림을 인자로 받는 경우.
@@ -29,10 +44,14 @@
 ;; - 스트림 자체가 딱 쓸 만큼만 알아서 원소를 만들어 내게끔 하는 것이다.
 
 ;; p415
-(define the-empty-stream '())
 
-(define (stream-null? s)
-  (null? s))
+;(stream-car (cons-stream x y) ) = x
+;(stream-cdr (cons-stream x y) ) = y
+
+;(define the-empty-stream '())
+
+;(define (stream-null? s)
+;  (null? s))
 
 (define (stream-ref s n)
   (if (= n 0)
@@ -167,6 +186,7 @@
 ;;; 셈미룬 물체를 처음으로 계산한 다음에 그 값을 어딘가에 적어 두었다가
 ;;; 나중에 그 물체를 다시 쓸 때 
 ;;; 같은 것을 계산한다면 적어둔 값을 쓰도록 한다.
+;421p
 
 (define (memo-proc proc)
   (let ((already-run? false) (result false))
@@ -178,7 +198,6 @@
 	  result))))
 
 ;;
-
 
 
 ;;;--------------------------< ex 3.50 >--------------------------
@@ -205,6 +224,9 @@
 
 ;;;--------------------------< ex 3.51 >--------------------------
 ;;; p422
+;셈미룸 계산법이 어떻게 돌아가는지 더 꼼꼼히 살펴볼 수 있도록 다음 프로시
+;저를 쓰기로 한다. 이 프로시저는 인자를 찍은 다음에 그대로 되돌려 준다.
+;다음차례대로 식을 계산하였을 때, 실행기가 찍어내는 결과는 어떠한가?
 
 (define x '())
 
@@ -225,6 +247,10 @@
 
 ;;;--------------------------< ex 3.52 >--------------------------
 ;;; p423
+;아래 식들을 차례대로 계산한다고 하자.
+;식을 하나씩 계산할 때마다 Sum 값은 어떻게 되는가?
+;stream-ref 식과 display-stream식의 값을 구하면 어떤 값이 찍히는가? memo-proc을 써서 효율을 끌어올
+;리지 않고, (delay <exp) 를 그냥 (lambda () <exp>)로 정의해 쓴다면, 답이 어떻게 달라지는가?
 
 (define sum 0)
 
@@ -254,9 +280,6 @@
 (stream-ref y 7)
 
 (display-stream z)
-
-
-
 
 
 
