@@ -288,6 +288,7 @@
 ;;;==========================================
 ;;; 3.5.2 무한 스트림(infinite stream)
 ;;; p424
+;;끝없이 길게 늘어진 차례열도 표현할 수 있다
 
 (define (integers-starting-from n)
   (cons-stream n (integers-starting-from (+ n 1))))
@@ -368,9 +369,13 @@ integers
 (stream-ref integers 5)
 
 
+;; 피보나치수열(ones 와 add-streams 응용)
+;		1	1	2	3	5	8	13	21	... = (stream-cdr fibs)
+;		0	1	1	2	3	5	8	13	... = fibs
+;0	1	1	2	3	5	8	13	21	34	... = fibs
+;
+;
 
-
-;; 피보나치수열
 (define fibs
   (cons-stream 0
 	       (cons-stream 1
@@ -435,6 +440,7 @@ primes
 
 ;;;--------------------------< ex 3.53 >--------------------------
 ;;; p430
+;프로그램을돌려보지 않고아래처럼 정의한스트림의 원소를 적어 보라.
 
 (define s (cons-stream 1 (add-streams s s)))
 
@@ -451,6 +457,12 @@ s
 
 ;;;--------------------------< ex 3.54 >--------------------------
 ;;; p430
+;add-stre없입와 비슷하게 mul-streams 프로시저를 정의하라. mul-streams
+;프로시저는 스트림 두 개를 인자로 받아서 원소끼리 곱한 결과를 내놓는다.
+;integers 스트림과nrul-streams로아래 정의의 빈 곳을 채워서 (0부터 헤아렸
+;을 때) n번째 원소의 값이 n+l 사다리곱&α01ial이 되는 스트림을 만들어 보라.
+
+;(define factorials (cons-stream 1 (mul-streams <??> <??>)))
 
 (define (mul-streams s1 s2)
   (stream-map * s1 s2))
@@ -484,6 +496,7 @@ factorials
 
 ;; 스트림 S를 인자로 받아서
 ;; S0, S0+S1, S0+S1+S2, ... 을 원소로 갖는 스트림을 내놓는 프로시저
+;예를 들어, (partial-sums integers)의 결과는 스트림 1, 3, 6, 10, 15, .. -과 같다.
 
 (define (partial-sums stream)
   (define pts
@@ -513,7 +526,8 @@ factorials
 ;;;--------------------------< ex 3.56 >--------------------------
 ;;; p430
 
-;; 2,3,5 외의 소수 인수를 가지지 않는 양의 정수를 작은 것부터 차례대로 반복하지 않고 늘어놓는 문제
+;; 2,3,5 외의 소수 인수를 가지지 않는 양의 정수를 작은 것부터 차례대로 반복하지 않고
+;늘어놓는 문제
 
 ;; 만족하는 스트림 S
 ;; - S는 1로 시작한다.
@@ -582,6 +596,7 @@ S
 
 ;;;--------------------------< ex 3.58 >--------------------------
 ;;; p432
+;아래 프로시저가 만들어 내는스트림이 어떤 것인지 해석해 보라.
 
 (define (expand num den radix)
   (cons-stream
@@ -622,6 +637,12 @@ S
 
 ;; a) a0 + a1x + a2x^2 + a3x^3 + ...
 ;; -> c + a0x + 1/2*a1x^2 + 1/3*a2x^3 + ...
+;2.5.3절에서 다항식을 리스트로나타내어 다항식 계산시스랩을 어떻게 구현하
+;는지 살펴보았다. 그와 비슷하게 아래와 같은 거듭제곱 수열power series을 무한
+;스트림으로나타내어 여러 가지 일을할 수 있다.
+;식에서 C는 상수다. 거듭제곱 수열을 나타내는 스트림 α。, a1 ' ι, - --를 인
+;자로 받아, 그 수열의 적분 값을 나타내는 (상수항을 뺀) 수열의 계수를 뽑아
+;내는 integrate-series 프로시 저를 정의해 보라
 
 (define (integrate-series s-before)
   (define series
@@ -655,6 +676,11 @@ S
 ;; sin을 미분하면 cos
 ;; cos 을 미분하면 -sin
 ;; 을 바탕으로 사인과 코사인 수열 정의
+
+;(define cosine-series
+;  (cons-stream 1 <??>))
+;(define sine-series
+;  (cons-stream 0 <??>))
 
 (define cosine-series
   (cons-stream 1 (integrate-series (scale-stream sine-series -1.))))
@@ -739,7 +765,7 @@ expected
 ;; X + Sr * X = 1
 ;;          X = 1 - Sr*X
 
-(define (invert-unit-series s)
+(define (invert-unit-series s)	
   (define s-inv
     (cons-stream 1
 		 (scale-stream (mul-streams (stream-cdr s)
@@ -779,8 +805,10 @@ expected
 
 ;;;--------------------------< ex 3.62 >--------------------------
 ;;; p435
-
-
+;연습문제 3.60과 3.61에서 얻은 결과를 써서 , 두 거듭제곱 수열을 나누는
+;div-series 프로시저를 정의해 보라.
+;연습문제 3.59에서 얻은 결과와 div-series 프로시저를 써서 , 탄젠트tangent를
+;위한 거듭제곱 수열을 어떻게 만드는지 밝혀라.
 
 (define (div-series s1 s2)
   (let ((c (stream-car s2)))
@@ -791,10 +819,6 @@ expected
                       (/ 1 c)))))
 
 (define tane-series (div-series sine-series cosine-series))
-
-
-
-
 
 
 
