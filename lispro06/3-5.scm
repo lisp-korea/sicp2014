@@ -882,7 +882,10 @@ expected
 
 ;;;-----------------------------
 ;;; pi-stream
-
+;먼저 덧셈으로 펼쳐진 수열의 (부호가 바뀌면서 나오는 홀수의 역수들로 이루어
+;진) 스트렴부터 만든다. 그 다음에는 (연습문제 3.혔에서 만든 partial-sum 프로
+;시저를 써서) 점점 더 많은 항(스트림 원소)을 합하는 스트림을 만들고, 다시 거
+;기에 4를곱한다.
 ;; pi/4 = 1 - 1/3 + 1/5 - 1/7 + ....
 (define (pi-summands n)
   (cons-stream (/ 1.0 n)
@@ -983,7 +986,10 @@ expected
 ;; +nan.0
 ;; +nan.0
 
-
+;이런 문제를 풀 때에는 스
+;트림을 쓰는 편이 더 깔끔하고 편리할 수 있다. 왜냐하면, 계산에 필요한 모든 상
+;태를 차례열이라는 한 가지 데이터 구조로 나타내고, 서로 다른 문제를 풀더라도
+;한결같은 방법으로 차례열스트림 연산을 적용하여 처리할 수 있기 때문이다.
 
 ;;;--------------------------< ex 3.63 >--------------------------
 ;;; p440
@@ -1382,7 +1388,10 @@ expected
 
 ;;;--------------------------< ex 3.69 >--------------------------
 ;;; p445
-
+;무한 스트렴 S, T, U를 인자로 받아 (S_i, T_j, U_k) 스트렴을 찍어내는 triples 프
+;로시저를 정의하여라.
+;triples를 가지고 피타고라스의 성질을 만족하는 i^2 + j^2 = k^2를만족하는 세 정수들의 묶음
+;(i,j, k)를 모두 담아내는 스트림을 만들어보라.
 ;; (stream-filter (lambda (pair)
 ;; 		 (prime? (+ (car pair) (cadr pair))))
 ;; 	       int-pairs)
@@ -1452,6 +1461,7 @@ expected
 
 
 ;;;--------------------------< ex 3.70 >--------------------------
+
 ;;; p445,6
 (define (merge-weighted s1 s2 weight)
         (cond ((stream-null? s1) s2)
@@ -1700,9 +1710,32 @@ expected
 
 (display-stream-n ramanujan-nums 6)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;solution
+(define (Ramanujan s)
+         (define (stream-cadr s) (stream-car (stream-cdr s)))
+         (define (stream-cddr s) (stream-cdr (stream-cdr s)))
+         (let ((scar (stream-car s))
+                   (scadr (stream-cadr s)))
+                (if (= (sum-triple scar) (sum-triple scadr)) 
+                        (cons-stream (list (sum-triple scar) scar scadr)
+                                                 (Ramanujan (stream-cddr s)))
+                        (Ramanujan (stream-cdr s)))))
+(define (triple x) (* x x x))
+(define (sum-triple x) (+ (triple (car x)) (triple (cadr x))))
+(define Ramanujan-numbers
+        (Ramanujan (weighted-pairs integers integers sum-triple)))
 
+;the next five numbers are:
+;(4104 (2 16) (9 15))
+;(13832 (2 24) (18 20))
+;(20683 (10 27) (19 24))
+;(32832 (4 32) (18 30))
+;(39312 (2 34) (15 33))
 ;;;--------------------------< ex 3.72 >--------------------------
 ;;; p447
+;연습문제 3. 71과 비슷하게, 세 가지 방법으로 두 수를 제곱하여 합한 값으로 나
+;타낼 수 있는 모든 수의 스트렴을 만들어 보라. 단, 세 가지 방법이 무엇인지도
+;보여줄수 있도록 하자.
 
 (define (weight-sq pair1)
   (let ((i (car pair1))
@@ -1746,7 +1779,7 @@ expected
 
 ;; 적분기의 구현
 ;; 덧셈기
-;; S_i = C + SUM{j=1,i}
+;; S_i = C + SUM{j=1,i} X_j dt
 (define (integral integrand initial-value dt)
   (define int
     (cons-stream initial-value
@@ -1791,7 +1824,7 @@ expected
 ;; 제로 크로싱
 ;; 음->양 : +1
 ;; 양->음 : -1
-;; 아니면 : 0
+;; 해당없음 : 0
 
 ;; 센서에서 오는 신호 : sense-data 스트림
 ;; 제로-크로싱 스트림 : zero-crossings 스트림
@@ -1837,7 +1870,7 @@ expected
 ;;; p450
 
 ;; 문제점 : 잡음에 민감하다
-;; 신호를 다듬는 과정을 거쳐서 잡신호 걸러내기(LPF)
+;; 신호를 다듬는 과정을 거쳐서 잡신호 걸러내기(LPF)Low Pass Filter
 ;; 옛 값과 평균하여 만든 신호에서 제로 크로싱 신호를 뽑아내도록
 
 ;; Alyssa가 짜고 Louis가 고침
@@ -1855,9 +1888,23 @@ expected
 ;; 구조는 그대로 두고 오류를 찾아서 바로 잡아라
 ;; 귀띔 : make-zero-crossings의 인자 수를 늘려야 한다.
 
+(define (make-zero-crossings input-stream last-value last-avpt) 
+         (let ((avpt (/ (+ (stream-car input-stream) last-value) 2))) 
+                 (cons-stream (sign-change-detetor avpt last-avpt) 
+                                        (make-zero-crossings (stream-cdr input-stream) 
+                                                                            (stream-car input-stream) 
+                                                                             avpt)))) 
+
 
 ;;;--------------------------< ex 3.76 >--------------------------
 ;;; p451
+;Alyssa가 입 력 신호를 다듬는 더
+;좋은 방법을 찾아내어 이를 적용하고 싶을 때, 제로 크로싱 프로시저를 고칠 필
+;요가 없어야 바람직하다.
+;Louis를 도와주기 위해 스트림 하나를 인자로 받아서
+;그 연속하는 두 원소의 평균 값들을 스트림으로 찍는 smooth 프로시저를 만들
+;어 보자. 그런 다음에 smooth를 가지고, 제로 크로싱 검출기가 모률 방식을 갖
+;추도록고쳐 보자.
 
 (define (smooth s)
   (scale-stream (add-streams s
@@ -1966,6 +2013,9 @@ expected
 ;; 			     (+ (* dt (stream-car integrand))
 ;; 				initial-value)
 ;; 			     dt))))
+;이 프로시저를 가지고 루프가 있는 시스햄을 흉내내 보면, 처음 짠 integral과
+;같은 문제가 생긴다. integrand를 셈미룬 인자가 되도록 만들어서 solve 프로
+;시저에서 이 프로시저를쓸수 있도록고쳐 보라.
 
 ;;---------------
 (define (integral delayed-integrand initial-value dt)
@@ -1994,6 +2044,9 @@ expected
 ;; d^2 y      dy
 ;; ----- - a*---- - by = 0
 ;; d t^2      dt
+;상수 값a, b, dt와y의
+;초기값 y。와 dy。, dy/dt를 인자로 받아, 연속하는 y 값들을 스트림으로 뽑아 낼
+;수 있도록 solve-2nd 프로시 저를 정의하라.
 
 (define (solve-2nd a b dy0 y0 dt)
   (define y (integral (delay dy) y0 dt))
@@ -2010,7 +2063,8 @@ expected
 
 ;;;--------------------------< ex 3.79 >--------------------------
 ;;; p456
-
+;연습문제 3.78의 solve-2nd 의 쓰임새를 늘려서 d^2y/dt^2 = f (dy/dt, y) 꼴의 2
+;차미분방정식을 풀 수 있도록 만들어 보라.
 ;; d^2 y      dy
 ;; ----- = f(----, y)
 ;; d f^2      dt
@@ -2048,6 +2102,9 @@ expected
 ;;  d v_C     1         R
 ;; ------- = ---*v_C - ---*i_L
 ;;   d t      L         L
+;RLC 프로시 저를 가지고 R=
+; C = 0.2 farad, L = 1 henry, dt = 0.1 second, and initial values iL0 = 0 amps and vC0 = 10 volts 인 직
+;렬 RLC 회로를 흉내내는 스트림 쌍을 뽑아내 보라
 
 (define (RLC R L C dt)
   (lambda (v_C0 i_L0)
@@ -2064,7 +2121,18 @@ expected
 ;; 에러
 ;; 뭔가 수정 필요
 
-
+(define (RLC R L C dt) 
+         (define (rcl vc0 il0) 
+                 (define vc (integral (delay dvc) vc0  dt)) 
+                 (define il (integral (delay dil) il0 dt)) 
+                 (define dvc (scale-stream il (- (/ 1 C)))) 
+                 (define dil (add-streams (scale-stream vc (/ 1 L)) 
+                                                                 (scale-stream il (- (/ R L))))) 
+                 (define (merge-stream s1 s2) 
+                         (cons-stream (cons (stream-car s1) (stream-car s2)) 
+                                                  (merge-stream (stream-cdr s1) (stream-cdr s2)))) 
+                 (merge-stream vc il)) 
+         rcl) 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 정의대로 계산하기(normal-order evaluation)
 ;;; p458
@@ -2118,11 +2186,11 @@ expected
          (remainder (+ (* 13 x) 5) 24)) 
  (define random-init (random-update (expt 2 32))) 
   
- ;; assume the operation 'generator and 'reset is a stream,  
- ;; and if the command is 'generator, the element of 
- ;; stream is a string, if the command is 'reset,  
- ;; it is a pair whose first element is 'reset,  
- ;; the other element is the reset value. 
+;스트림 방식의
+;마구잡이 수 만들개는 새 마구잡이 수를 뽑아내거나 마구잡이 수열을 지정된
+;값으로 되돌려 달라는 부탁을 입력 스트림으로 받아서, 그 바람대로 마구잡이
+;수 스트림을 뽑아낸다. 이 문제를 풀 때에는 덮어쓰기 연산을 쓰지 마라.
+
  (define (random-number-generator command-stream) 
          (define random-number 
                  (cons-stream random-init 
@@ -2141,7 +2209,9 @@ expected
 
 ;;;--------------------------< ex 3.82 >--------------------------
 ;;; p461
-  
+;연습문제 3. 5의 몬테 카를로 적분 Monte Carlo integrdtion을 스트림 방식으로 다시 풀어
+;보라. 스트림 판 estimate-integral 프로시저에는 실험 횟수를 받는 인자
+;가 없다. 그 대신, 계속되는 실험에서 어림잡은값들의 스트림을 뽑아낼 수 있다.
  (define (random-in-range low high) 
          (let ((range (- high low))) 
                  (+ low (* (random) range)))) 
@@ -2174,3 +2244,47 @@ expected
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 함수형 프로그래밍에서 시간의 문제
 ;;; p461
+
+;상태가 있는 진짜 시스댐을 컴퓨터 프로그램으로 흉내내고자
+;할 때 이를 모률 방식에 따라 잘 짜맞출 방법이 필요
+
+;스트림이란, 시간에 따른 모든 상태 변회를 연속하는 값으로 나타
+;내어 어떤 물체의 상태와 같이 자꾸 달라지는 양을 차례열로 흉내낸 것이다
+;3. 1.3절에서 다음과 같이 간단한 인출 프로세서를 만든 바 있다.
+
+(define (make-simplified-withdraw balance)
+  (lambda (amount)
+    (set! balance (- balance amount))
+    balance))
+    
+;이 프로시저는 balance와 함께 찾을 돈(amount)의 스트림을 인자로 받아서
+;남은 돈(balance)의 스트렴을 내놓는다.
+
+(define (stream-withdraw balance amount-stream)
+  (cons-stream
+   balance
+   (stream-withdraw (- balance (stream-car amount-stream))
+                    (stream-cdr amount-stream))))
+                    
+;그 시스웹과 주고받는 행동transaction 하나하나를 따로
+;살피지 않고, 시스템 전체를 balance들의 스트림으로 바라본다면, 그 사람의 눈
+;에는 이 시스렘에 상태가 없는 것처럼 비칠 수 있다.
+;->물리학에서도 이와 비슷하게 입자의 움직임을 살펴볼 때에는, 입자 위치(곧, 상태)가 변한다고 한다. 하지
+;만, 시간과 공간으로 입자의 세계선(particle’s world line)을 바라보면, 아무런 변화가 없다.
+
+;물체 상태는 상태변수로 흉내내고, 달라지눈 상태는 상태변수 값을 덮어쓰는 것으로 흉내낸다.
+;그렇게 하여, 실세계의 시간을 컴퓨터의 실행 시간으로 흉내낼 수 있게 되고, 그
+;에 따라 컴퓨터에서 ‘물체’를 가지게 되는 것이다
+
+;컴퓨터 계산을 물체로 표현하는 방식modeling with objects, 즉 물체 방식이 효과가
+;뛰어나면서도 받아들이기 쉬운 까닭은, 실제 사물이 서로 힘을 미치는 현상을 우
+;리가 이해하는 방식과 잘 맞아떨어지기 때문이다. 하지만, 이 장에서 여러 번 살
+;펴보았다시피 , 이 방식은 사건이 일어나는 차례에 제약을 건다거나 여러 프로세
+;스의 동기를 맞춘다거나 하는 껄끄러운 문셋거리를 끌어들인다. 바로 이런 문셋
+;거리를 피해갈 수 있어서 함수형 프로그래밍 언어functional program1ning language를
+;만드는 일이 활기를 띠게 되었다.
+
+;따라서 함수 방식 functional style 에 따라 이 문제를 풀기로 하였다면, 
+;어쩔 수 없이 서로 다른 에이전트agents에서 들어오는 입력을 한데
+;섞어야 하고 그 때문에 함수 방식을 지킴으로써 사라질 것이라 믿은 문제점들을
+;다시 끌어들이제 된다
