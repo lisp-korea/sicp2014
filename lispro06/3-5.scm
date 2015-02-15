@@ -421,6 +421,11 @@ double
 		  (integers-starting-from 3))))
 
 
+;; 
+;	3	4	5	6	7	8	9	10	11	12	13... = integers-starting-from 3
+;	3		5		7				11		13	17	13	21	34... = (stream-filter prime? (integers-starting-from 3))
+;2	3		5		7				11		13	17	13	21	34... = primes
+
 ;; n이 sqrt(n) 과 같거나 그보다 작은 소수로 나누어지는지 따져봐야한다.
 (define (prime? n)
   (define (iter ps)
@@ -445,6 +450,9 @@ primes
 (define s (cons-stream 1 (add-streams s s)))
 
 ;; -> 1 2 4 8 16 ...
+;	1	2	4	8	16	32	64	128... = s -> squre
+;	1	2	4	8	16	32	64	128... = s -> squre
+;1	2	4	8	16	32	64	128	256... = s -> squre
 
 s
 
@@ -470,6 +478,11 @@ s
 (define s (cons-stream 2 (mul-streams s s)))
 
 ;; -> 4,16,256,65536
+
+;	2	4	16	256... = mul-streams
+;	2	4	16	256... = mul-streams
+;2	4	16	256	65536... = mul-streams
+
 (stream-ref s 0)
 (stream-ref s 1)
 (stream-ref s 2)
@@ -478,6 +491,9 @@ s
 (stream-ref s 5)
 
 
+;1	2	3	4	5	6... = integers(가)
+;	1	2	6	24	60... = factorials(나)
+;1	2	6	24	60	360... = factorials(가*나->mulstreams)
 
 (define factorials (cons-stream 1 (mul-streams factorials integers)))
 
