@@ -52,26 +52,29 @@ combination
 (define (eval exp env)
   (condp #(%1 %2) exp
 	self-evaluating? exp
-	variable?        (llopup-variable-value exp env)
+	variable?        (lookup-variable-value exp env)
+
+  ;; tagged list
 	quoted?          (text-of-quotation     exp)
 	assignment?      (eval-assignment       exp env)
+
 	definition?      (eval-definition       exp env)
 	if?              (eval-if               exp env)
 
 
 	lambda?          (make-procedure
-								(lambda-parameters exp)
-								(lambda-body exp)
-								env)
+                       (lambda-parameters exp)
+                       (lambda-body exp)
+                       env)
 
 
 	begin?           (eval-sequence (begin-actions exp) env)
-	cond?            (eval                 (cond->if exp) env)
+	cond?            (eval          (cond->if exp)      env)
 
 
 	application?     (apply
-						(eval (operator exp) env)
-						(list-of-values (operands exp) env))
+                       (eval (operator exp) env)
+                       (list-of-values (operands exp) env))
 
 	(error "Unknown expression type -- EVAL" exp)))
 ```
@@ -189,12 +192,215 @@ true?의 필요성에 대해 생각
 
 
 4.1.2 식을 나타내는 방법 - 481
+```lisp
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true))
+        (else false))
+
+(define (variable? exp)
+  (symbol? exp))
+
+
+;; (quote <text-of-quotation>)
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+    (eq (car exp) tag)
+    false))
+
+
+
+;; (set! <var> <value>)
+(define (assignment? exp)
+  (tagged-list exp 'set!))
+
+(define (assignment-variable exp)
+  (cadr exp))
+
+(define (assignment-value exp)
+  (caddr exp))
 
 
 
 
+;; (define <var> <value>)
+;; (define (<var> <p1>...<pn>)
+;;   <body>)
+;; (define <var>
+;;   (lambda (<p1>...<pn>)
+;;     <body>))
+
+(define (difinition? exp)
+  (tagged-list? exp 'define))
+(define (difinition-variable exp)
+  (if (symbol? (second exp))
+    (second exp)
+      (first (second exp))))
+(define (difinition-value exp)
+  (if (symbol? (second exp)
+    (third exp)
+    (make-lambda (rest (second exp)
+                 (third exp))))))
 
 
-4.1.3 언어 실행기에서 쓰는 데이터 구조 - 497
+;; lambda
+(define (lambda? exp)
+  (tagged-list? exp 'lambda))
+(define (lambda-parameters exp)
+  (second exp))
+(define (lambda-body exp)
+  (third exp))
 
-4.1.4 언어 실행기를 보통 프로그램처럼 돌려보기
+(define (make-lambda parameters body)
+  (cons 'lambda (cons parameters body)))
+
+
+;; (if <predicate>
+;;   <consequent>
+;;   <alternative>)
+(define (if? exp)
+  (tagged-list? exp 'if))
+(define (if-predicate exp)
+  (second exp))
+(define (if-consequent exp)
+  (third exp))
+(define (if-alternative exp)
+  (if (null? (fourth exp)
+    'false
+    (fourth exp))))
+
+(define (make-if predicate consequent alternative)
+  (list 'if predicate consequent alternative))
+
+
+;; (begin <bla1>...<blan>)
+(define (begin? exp)
+  (tagged-list? exp 'begin))
+(define (begin-actions exp)
+  (rest exp))
+(define (last-exp? seq)
+  (null? rest seq))
+(define first-exp seq)
+  (first seq))
+(define (rest-exps seq)
+  (rest seq))
+
+(define (sequence->exp seq)
+  (cond ((null? seq) seq)
+        ((last-exp? seq) (first-exp seq))
+        (else
+          (make-begin seq))))
+(define (make-begin seq)
+  (cons 'begin seq))
+
+;; procedure
+(define (application? exp)
+  (pair? exp))
+(define (operator exp)
+  (first exp))
+(define (operands exp)
+  (rest exp))
+(define (no-operands? ops)
+  (null? ops))
+(define (first-operand ops)
+  (first ops))
+(define (rest-operands ops)
+  (rest ops))
+
+
+
+;; cond => if
+(define (cond? exp)
+  (tagged-list? exp 'cond))
+(define (cond-cluses exp)
+  (rest exp))
+(define (cond-else-clause? clause)
+  (eq? (cond-predicate clause) 'else))
+(define (cond-predicate clause)
+  (first clause))
+(define (cond-actions clause)
+  (rest clause))
+(define (cond->if exp)
+  (expand-clauses (cond-clauses exp)))
+
+
+(define (expand-clauses clauses)
+  (if (null? clauses)
+    'false
+    (let [[fst & rst] clauses]
+      (if (cond-else-clause? fst)
+        (if (null? rst)
+          (sequence->exp (cond-actions fst))
+          (error "ELSE clause isn't last -- COND->IF" clauses))
+        (make-if (cond-predicate fst)
+                 (sequence->exp (cond-actions fst))
+                 (expand-clauses rest))))))
+```
+
+연습문제 4.2
+assignment?
+application?
+
+```lisp
+;; a.
+(eval ‘(define x 3) env)
+;; (application? ‘(define x 3))
+
+-> (apply (eval ‘define env)
+          (list-of-values (‘x 3) env)))
+
+(eval ‘define env)
+;; (variable? ‘define)
+-> (lookup-variable-value exp env)
+
+(error “Unbound variable” ‘define)
+
+
+;; b.
+(define (application? exp)
+  (tagged-list? exp 'call))
+(define (operator exp) (cadr exp))
+(define (operands exp) (cddr exp))
+```
+
+
+
+연습문제 4.3
+tagged-list?를 쓰는 것들을 빼서
+
+((syntax-table-has-tag? (get-tag exp))
+ ((get-fn-from-syntax-table (get-tag exp)) exp env))
+
+syntax-table = {
+  'quote  =>
+  'set!   =>
+  'define =>
+  'lambda =>
+  'begin  =>
+  'if     =>
+  'cond   =>
+}
+
+
+
+연습문제 4.4
+(define (self-evaluating? exp)
+  (or (number? exp)
+      (string? exp)
+      (boolean? exp)))
+
+syntax-table = {
+  'or =>
+  'and =>
+}
+
+
+연습문제 4.5
+연습문제 4.6
+연습문제 4.7
+연습문제 4.8
+연습문제 4.9
+연습문제 4.10
