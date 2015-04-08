@@ -176,3 +176,91 @@
  ; M-Eval input:  
  ;(exit) 
  ; 
+
+;;ex4.32
+;;In chapter 3, the car is not lazy.
+;;but here car and cdr are all lazy-evaluated.
+;;then we can build a lazy tree, all the branches of the tree are lazy-evaluated. 
+
+;;ex4.33
+;; '(a b c) is equal to (quote (a b c)). so we should change the code in text-of-quotation like this. 
+  
+  
+ (define prev-eval eval) 
+  
+ (define (eval expr env) 
+     (if (quoted? expr) 
+         (text-of-quotation expr env) 
+         (prev-eval expr env))) 
+  
+ (define (quoted? expr) (tagged-list? expr 'quote)) 
+  
+ (define (text-of-quotation expr env)  
+         (let ((text (cadr expr))) 
+                 (if (pair? text) 
+                         (evaln (make-list text) env) 
+                         text))) 
+ (define (make-list expr) 
+         (if (null? expr) 
+                 (list 'quote '()) 
+                 (list 'cons 
+                           (list 'quote (car expr)) 
+                           (make-list (cdr expr))))) 
+                           
+;;ex 4.34
+;; based on 4-33 
+  
+ (map (lambda (name obj) 
+         (define-variable!  name (list 'primitive obj) the-global-environment)) 
+     (list 'raw-cons 'raw-car 'raw-cdr) 
+     (list cons car cdr)) 
+  
+ (actual-value 
+     '(begin 
+  
+         (define (cons x y) 
+             (raw-cons 'cons (lambda (m) (m x y)))) 
+  
+         (define (car z) 
+             ((raw-cdr z) (lambda (p q) p))) 
+  
+         (define (cdr z) 
+             ((raw-cdr z) (lambda (p q) q))) 
+     ) 
+     the-global-environment) 
+  
+ (define (disp-cons obj depth) 
+     (letrec ((user-car (lambda (z) 
+                 (force-it (lookup-variable-value 'x (procedure-environment (cdr z)))))) 
+              (user-cdr (lambda (z) 
+                 (force-it (lookup-variable-value 'y (procedure-environment (cdr z))))))) 
+         (cond 
+             ((>= depth 10) 
+                 (display "... )")) 
+             ((null? obj) 
+                 (display "")) 
+             (else 
+                 (let ((cdr-value (user-cdr obj))) 
+                     (display "(") 
+                     (display (user-car obj)) 
+                     (if (tagged-list? cdr-value 'cons) 
+                         (begin 
+                             (display " ") 
+                             (disp-cons cdr-value (+ depth 1))) 
+                         (begin 
+                             (display " . ") 
+                             (display cdr-value))) 
+                     (display ")")))))) 
+  
+ (define (user-print object) 
+     (if (compound-procedure? object) 
+         (display 
+             (list 'compound-procedure 
+                 (procedure-parameters object) 
+                 (procedure-body object) 
+                 '<procedure-env>)) 
+         (if (tagged-list? object 'cons) 
+             (disp-cons object 0) 
+             (display object)))) 
+  
+ (driver-loop)
