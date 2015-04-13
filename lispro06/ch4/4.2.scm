@@ -308,6 +308,53 @@
  ;(exit) 
  ; 
 
+
+;;4.2.3 제때셈 리스트와스트림4.2.3  Streams as Lazy Lists
+
+(define (cons x y)
+  (lambda (m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+(define (list-ref items n)
+  (if (= n 0)
+      (car items)
+      (list-ref (cdr items) (- n 1))))
+(define (map proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor))
+       items))
+(define (add-lists list1 list2)
+  (cond ((null? list1) list2)
+        ((null? list2) list1)
+        (else (cons (+ (car list1) (car list2))
+                    (add-lists (cdr list1) (cdr list2))))))
+(define ones (cons 1 ones))
+(define integers (cons 1 (add-lists ones integers)))
+;;; L-Eval input:
+(list-ref integers 17)
+;;; L-Eval value: 18
+
+(define (integral integrand initial-value dt)
+  (define int
+    (cons initial-value
+          (add-lists (scale-list integrand dt)
+                    int)))
+  int)
+(define (solve f y0 dt)
+  (define y (integral dy y0 dt))
+  (define dy (map f y))
+  y)
+;;; L-Eval input:
+(list-ref (solve (lambda (x) x) 1 0.001) 1000)
+;;; L-Eval value: 2.716924
+
 ;;ex4.32
 ;;In chapter 3, the car is not lazy.
 ;;but here car and cdr are all lazy-evaluated.
