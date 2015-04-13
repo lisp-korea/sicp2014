@@ -13,6 +13,8 @@
 (define (announce-output string) 
 (newline) (display  string) (newline))
 
+;;4.2 Scheme 바꿔보기 - 제때 계산법 4.2  Variations on a Scheme -- Lazy Evaluation
+;;4.2.1 식의값을 구하는 차례-정의대로계산법과 인자먼저 계산법 4.2.1  Normal Order and Applicative Order
 
 (define (try a b)
 (if (= a 0) 1 b))
@@ -21,6 +23,15 @@
 
 ;;Output:
 1
+
+
+(define (unless condition usual-value exceptional-value)
+  (if condition exceptional-value usual-value))
+  
+(unless (= b 0)
+        (/ a b)
+        (begin (display "exception: returning 0")
+               0))
 
 ;;ex 4.25
 
@@ -62,6 +73,8 @@
  (define (unless->if expr) 
    (make-if (unless-predicate expr) (unless-consequence expr) (unless-alternative expr))) 
 
+
+;;4.2.2 제때 계산법을 따르는 실행기 4.2.2  An Interpreter with Lazy Evaluation
 
 ;;ex4.27
 (define w (id (id 10))) 
