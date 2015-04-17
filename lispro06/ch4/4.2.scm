@@ -202,7 +202,26 @@
          (thunk-value obj))
         (else obj)))
         
+        
+(define (true? x)
+  (not (eq? x false)))
+(define (false? x)
+  (eq? x false))
+(define (if? exp) (tagged-list? exp 'if))
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+
+
 ;;ex4.27
+;;제때 실행기에 다음 정의를 입력했다고하자.
+(define count 0)
+(define (id x)
+(set! count (+ count 1)) x)
+;;아래와 같은 차례로 식을 계산한다고 할 때 빠진 값을 채워라. 그리고 왜 그런 답이 나오는지 설명하라.
 (define w (id (id 10))) 
   
  ;;; L-Eval input: 
