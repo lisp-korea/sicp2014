@@ -285,6 +285,22 @@
  ;;I like Cy's method. 
  
  ;;ex4.31
+ (define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+  (define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (actual-value (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+     (eval-sequence 
+         (procedure-body procedure) 
+         (extend-environment 
+             (procedure-arg-names (procedure-parameters procedure)) 
+             (iter-args  
+                 (procedure-parameters procedure) 
+                 arguments) 
+             (procedure-environment procedure)))) 
+             
   (define (apply procedure arguments env) 
      (cond 
          ((primitive-procedure? procedure) 
