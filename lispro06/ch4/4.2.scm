@@ -453,15 +453,24 @@
                              (display cdr-value))) 
                      (display ")")))))) 
   
- (define (user-print object) 
-     (if (compound-procedure? object) 
-         (display 
-             (list 'compound-procedure 
-                 (procedure-parameters object) 
-                 (procedure-body object) 
-                 '<procedure-env>)) 
-         (if (tagged-list? object 'cons) 
-             (disp-cons object 0) 
-             (display object)))) 
+
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+(define (compound-procedure? p)
+  (tagged-list? p 'procedure))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+(define (user-print object)
+  (if (compound-procedure? object)
+      (display (list 'compound-procedure
+                     (procedure-parameters object)
+                     (procedure-body object)
+                     '<procedure-env>))
+      (display object)))
   
  (driver-loop)
