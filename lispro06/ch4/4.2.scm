@@ -414,36 +414,42 @@
 ;;; L-Eval value: 2.716924
 
 ;;ex4.32
+;;3장의스트림과이절에서설명한 ‘더제때셈하는’제때셈리스트사이에어 떤다른점이 있는지잘드러내는몇가지보기를들어라.
 ;;In chapter 3, the car is not lazy.
 ;;but here car and cdr are all lazy-evaluated.
 ;;then we can build a lazy tree, all the branches of the tree are lazy-evaluated. 
 
 ;;ex4.33
+;;Ben Bitdiddle은 다음 식의 값을 구하여, 윗 글에 나온 제때셈 리스트의 구현을 검사해 보려고 하였다.
+;;그런데 생각과는 달리 문제가 생겨서 깜짝 놀랐다. 조금 생각해 보니,
+;;따온 식 을처리하여나오는 ‘리스트’가,새로정의한cons,car,cdr를
+;;바탕으로하는 리스트와 다르다는 사실을 깨닫게 되었다. 드라이버 루프에서 따옴표 친 리스
+;;트식을입력하면제때셈 리스트가나오도록언어 실행기에서 따옴표친식의 처 리 과정을 고쳐 보라.
 ;; '(a b c) is equal to (quote (a b c)). so we should change the code in text-of-quotation like this. 
+;;(car '(a b c))  
   
+(define (text-of-quotation expr) 
   
- (define prev-eval eval) 
+     (define (new-list pair) 
+         (if (null? pair) 
+             '() 
+             (make-procedure 
+                 '(m) 
+                 (list (list 'm 'car-value 'cdr-value)) 
+                 (extend-environment 
+                     (list 'car-value 'cdr-value) 
+                     (list (car pair) (new-list (cdr pair))) 
+                     the-empty-environment)))) 
   
- (define (eval expr env) 
-     (if (quoted? expr) 
-         (text-of-quotation expr env) 
-         (prev-eval expr env))) 
-  
- (define (quoted? expr) (tagged-list? expr 'quote)) 
-  
- (define (text-of-quotation expr env)  
-         (let ((text (cadr expr))) 
-                 (if (pair? text) 
-                         (evaln (make-list text) env) 
-                         text))) 
- (define (make-list expr) 
-         (if (null? expr) 
-                 (list 'quote '()) 
-                 (list 'cons 
-                           (list 'quote (car expr)) 
-                           (make-list (cdr expr))))) 
+     (let ((text (cadr expr))) 
+         (if (not (pair? text)) 
+             text 
+             (new-list text)))) 
                            
 ;;ex 4.34
+;;언어 실행기의 드라이버 루프를 고쳐서 제때셈 쌍과 리스트가 알맞게 찍히도록
+;;해보아라. (끝없는 리스트가찍히도록하려면 어떻게 해야하는가?) 언어 실행기 에서 제때셈 쌍을 찍으려 할 때,
+;;제때셈 쌍인지 아닌지 알아볼 수 있도록 그 표현 방법을 고쳐야 할지도 모른다.
 ;; based on 4-33 
   
  (map (lambda (name obj) 
