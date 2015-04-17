@@ -13,6 +13,29 @@
 (define (announce-output string) 
 (newline) (display  string) (newline))
 
+(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+(define (add-binding-to-frame! var val frame)
+  (set-car! frame (cons var (car frame)))
+  (set-cdr! frame (cons val (cdr frame))))
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (< (length vars) (length vals))
+          (error "Too many arguments supplied" vars vals)
+          (error "Too few arguments supplied" vars vals))))
+(define (setup-environment)
+  (let ((initial-env
+         (extend-environment (primitive-procedure-names)
+                             (primitive-procedure-objects)
+                             the-empty-environment)))
+    (define-variable! 'true true initial-env)
+    (define-variable! 'false false initial-env)
+    initial-env))
+(define the-global-environment (setup-environment))
+
 ;;4.2 Scheme 바꿔보기 - 제때 계산법 4.2  Variations on a Scheme -- Lazy Evaluation
 ;;4.2.1 식의값을 구하는 차례-정의대로계산법과 인자먼저 계산법 4.2.1  Normal Order and Applicative Order
 
