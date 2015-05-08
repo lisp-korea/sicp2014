@@ -46,10 +46,10 @@ gcd controller
 ```
 
 factorial data-path
-20140301232054.png
+![factorial data-path](20140301232054.png)
 
 factorial controller
-20140301232053.png
+![factorial controller](20140301232053.png)
 
 
 
@@ -58,7 +58,7 @@ factorial controller
 5.1.1 레지스터 기계를 묘사하는 언어
 복잡한 기계를 더 쉽게 설명하기 위해, data-path와 controller의 있는 모든 정보를 글의 형태로 작성할 수 있도록 새 언어를 만든다.
 
-
+```lisp
 (data-path
 	(registers
 		((name a)
@@ -73,6 +73,9 @@ factorial controller
 		((name =)
 		 (inputs (register b) (constant 0)))))
 
+```
+
+```lisp
 (controller
 	test-b
 		(test =)
@@ -82,10 +85,12 @@ factorial controller
 		(b<-t)
 		(goto (label test-b))
 	gcd-done)
+```
 
 
 data-path와 controller정보를 모아, 한번에 보기 편하도록 표기법 바꿈.
 
+```lisp
 (controller
 	test-b
 		(test (op =) (reg b) (const 0))
@@ -95,10 +100,13 @@ data-path와 controller정보를 모아, 한번에 보기 편하도록 표기법
 		(assign b (reg t))
 		(goto (label test-b))
 	gcd-done)
+```
 
 
-연습문제 5.2
+### 연습문제 5.2
 연습문제 5.1에서 만든 factorial을 기계어로 설명해라.
+
+```lisp
 (controller
 	   (assign counter (const 1))
 	   (assign product (const 1))
@@ -111,12 +119,16 @@ data-path와 controller정보를 모아, 한번에 보기 편하도록 표기법
 	   (assign (reg product) (reg t2))
 	   (goto (label test-counter))
    factorial-done)
-   
-   
-5.1.2 기계 디자인에서의 속 내용 감추기
+```
+
+
+
+## 5.1.2 기계 디자인에서의 속 내용 감추기
+
 rem을 예로들면서, rem이 제어기 정의처럼 바뀐다고 가정하고, 프로그램을 작성.
 
-연습문제 5.3
+### 연습문제 5.3
+```lisp
 (define (sqrt x)
 	(define (good-enough? guess)
 		(-> guess
@@ -132,8 +144,9 @@ rem을 예로들면서, rem이 제어기 정의처럼 바뀐다고 가정하고,
 			guess
 			(sqrt-iter (improbe guess))))
 	(sqrt-iter 1.0))
+```
 
-
+```lisp
 (controller
 		(assign guess (const 1.0))
 	sqrt-iter
@@ -142,7 +155,7 @@ rem을 예로들면서, rem이 제어기 정의처럼 바뀐다고 가정하고,
 		(assign guess (op improve) (reg guess) (reg x))
 		(goto (label sqrt-iter))
 	sqrt-done)
-
+```
 
 
 ## 5.1.3 서브루틴
