@@ -7,11 +7,12 @@ lisp 실행기의 실행 흐름을 완벽하게 파악하려면, lisp보다 낮�
 
 탑다운 - 바텀업
 
-5.1 : 레지스터 기계 설계
-5.2 : 레지스터 기계 시뮬레이트하기
-5.3 : 메모리 할당 및 관리
-5.4 : 4.1에서 다룬 메타서큘러 실행기로 설명한 알고리즘을 수행하는 레지스터 기계 설계
-5.5 : compiler만들기.
+* 5.1 : 레지스터 기계 설계
+* 5.2 : 레지스터 기계 시뮬레이트하기
+* 5.3 : 메모리 할당 및 관리
+* 5.4 : 4.1에서 다룬 메타서큘러 실행기로 설명한 알고리즘을 수행하는 레지스터 기계 설계
+* 5.5 : compiler만들기.
+
 
 ## 5.1 레지스터 기계 설계하기.
 레지스터 기계를 설계하려면, data path와 controller를 설계해야함.
@@ -23,6 +24,9 @@ lisp 실행기의 실행 흐름을 완벽하게 파악하려면, lisp보다 낮�
 		a
 		(gcd b (remainder a b))))
 ```
+
+
+http://sarabander.github.io/sicp/html/5_002e1.xhtml#g_t5_002e1
 
 gcd data-path
 ![a](Fig5.1a.std.svg)
@@ -159,12 +163,132 @@ rem을 예로들면서, rem이 제어기 정의처럼 바뀐다고 가정하고,
 
 
 ## 5.1.3 서브루틴
-TODO
+
+=, rem 연산하는 곳이 2곳이나 있다.
+
+```lisp
+gcd-1
+ (test (op =) (reg b) (const 0))
+ (branch (label after-gcd-1))
+ (assign t (op rem) (reg a) (reg b))
+ (assign a (reg b))
+ (assign b (reg t))
+ (goto (label gcd-1))
+after-gcd-1
+
+
+gcd-1'
+ (test (op =) (reg b') (const 0))
+ (branch (label after-gcd-1'))
+ (assign t' (op rem) (reg a') (reg b'))
+ (assign a' (reg b'))
+ (assign b' (reg t'))
+ (goto (label gcd-1'))
+after-gcd-1'
+```
+
+
+
+일단, a, b, t를 재활용하고, continue라는 특별한 레지스터를 두어, 분기를 탈 수 있도록 한다.
+
+
+```lisp
+
+gcd
+	(test (op =) (reg b) (const 0))
+	(branch (label gcd-done))
+	(assign t (op rem) (reg a) (reg b))
+	(assign a (reg b))
+	(assign b (reg t))
+	(goto (label gcd))
+
+
+
+gcd-done
+	(test (op =) (reg continue) (const 0))
+	(branch (label after-gcd-1))
+	(goto (label after-gcd-2))
+	...
+	(assign continue (const 0))
+	(goto (label gcd))
+
+
+
+after-gcd-1
+	...
+	(assign continue (const 1))
+	(goto (label gcd))
+
+
+
+after-gcd-2
+
+```
+
+
+gcd 계산이 늘어날때마다, branch갯수가 늘어날 것임.
+
+continue레지스터를, 서브루틴이 끝날때 다시 시작할 장소의 라벨을 저장할 수 있어야함.
+
+- label과 같이 특별한 값을 저장할 수 있도록 assign명령어 확장
+- 레지스터 값으로도 실행 위치를 바꾸어 명령 진행할 수 있도록 goto명령어 확장
+
+
+```lisp
+gcd
+	(test (op =) (reg b) (const 0))
+	(branch (label gcd-done))
+	(assign t (op rem) (reg a) (reg b))
+	(assign a (reg b))
+	(assign b (reg t))
+	(goto (label gcd))
+
+gcd-done
+	(goto (reg continue))
+	...
+	(assign continue (label after-gcd-1))
+	(goto (label gcd))
+after-gcd-1
+	...
+	...
+	(assign continue (label after-gcd-2))
+	(goto (label gcd))
+after-gcd-2
+```
+
+
+continue레지스터가 하나이기 때문에, 서브루틴이 여러개가 될 겅우 문제가 발생한다.
 
 
 ## 5.1.4 stack을 이용해서 recursion구현하기
-TODO
 
+factorial, gcd와는 이전에 계산한 값을 다시 사용하는가 하는 차이가 있다. 
+
+```lisp
+(define (factorial n)
+	(if (= n 1)
+		1
+		(* (factorial (- n 1)) n)))
+		
+(define (gcd a b)
+	(if (= b 0)
+		a
+		(gcd b (remainder a b))))
+```
+
+계산할 값을 담아둘 stack이 필요.
+
+- stack에 값을 넣는 save
+- stack에서 값을 빼내오는 restore
+
+
+책 그림 5.11참고
+
+
+### 연습문제 5.4
+http://d.hatena.ne.jp/tetsu_miyagawa/20140713/1405211293
+
+### 연습문제 5.5
+### 연습문제 5.6
 
 ## 5.1.5 명령어 정리
-
