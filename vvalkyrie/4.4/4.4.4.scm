@@ -2,7 +2,7 @@
 (define output-prompt ";;; Query results: ")
 
 (define (prompt-for-input string)
-  (newline (newline) (display string) (newline)))
+  (newline) (newline) (display string) (newline))
 
 
 (define global-array '())
@@ -475,6 +475,11 @@
     frame-stream))
 
 
+; for debugging
+;(define (qeval query frame-stream)
+;  (let ((qproc (get (type query) 'qeval)))
+;    (simple-query query frame-stream)))
+
 (define (qeval query frame-stream)
   (let ((qproc (get (type query) 'qeval)))
     (if qproc
@@ -494,7 +499,7 @@
 
 (define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
-    frame-stream
+    the-empty-stream
     (interleave-delayed
       (qeval (first-disjunct disjuncts) frame-stream)
       (delay (disjoin (rest-disjuncts disjuncts)
@@ -536,11 +541,16 @@
 (put 'always-true 'qeval always-true)
 
 
+; -- query-driver-loop
+; If the expression is a rule or an assertion, then it is added to database [a].
+; Otherwise the expression is assumed to be a query and is passed to `qeval`
+; with a (empty) frame stream [b].
+
 (define (query-driver-loop)
   (prompt-for-input input-prompt)
   (let ((q (query-syntax-process (read))))
     (cond ((assertion-to-be-added? q)
-           (add-rule-or-assertion! (add-assertion-body q))
+           (add-rule-or-assertion! (add-assertion-body q)) ;; [a]
            (newline)
            (display "Assertion added to data base.")
            (query-driver-loop))
@@ -554,6 +564,19 @@
                                frame
                                (lambda (v f)
                                  (contract-question-mark v))))
-                (qeval q (singleton-stream '()))))
+                (qeval q (singleton-stream '())))) ;; [b]
             (query-driver-loop)))))
 
+
+; test
+
+(query-driver-loop)
+
+(assert!
+  (rule (append-to-form () ?y ?y)))
+
+(assert!
+  (rule (append-to-form (?u . ?v) ?y (?u . ?z))
+        (append-to-form ?v ?y ?z)))
+
+(append-to-form (a b) (c d) ?z)
