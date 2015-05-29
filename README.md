@@ -14,7 +14,7 @@ Requirements
 
 Complete Source Code from SICP 2nd Edition
 ------------------------------------------
-[SICP Source Code][SICP Source Code]
+[SICP_Source_Code][SICP_Source_Code]
 
 How to
 ------
@@ -49,7 +49,7 @@ How to
         $ git push origin master    
 
 [SICP]: http://mitpress.mit.edu/sicp/
-[SICP Souece Code]: https://mitpress.mit.edu/sicp/code/
+[SICP_Souece_Code]: https://mitpress.mit.edu/sicp/code/
 [lispkorea]: http://www.lispkorea.org
 [lispkorea]: http://groups.google.com/group/lisp-korea
 [github]:http://github.com
