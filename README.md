@@ -14,7 +14,7 @@ Requirements
 
 Complete Source Code from SICP 2nd Edition
 ------------------------------------------
-[SICP Source Code][SICP Source Code 다운로드]
+[SICP Source Code][SICP Source Code]
 
 How to
 ------
