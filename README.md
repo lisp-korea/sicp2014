@@ -18,7 +18,7 @@ Complete Source Code from SICP 2nd Edition
 
 How to
 ------
-1. [github][github] 가입
+1. [github][github 2] 가입
     * 첫 화면에서 아래 Plans, Pricing and Signup 버튼 클릭
     * Plan & Pricing 화면에서 $0/mo Free for open source 란 Create a free account 버튼 클릭
     * user name, email, password를 등록합니다. 
