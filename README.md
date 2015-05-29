@@ -11,7 +11,11 @@ Requirements
 -----------
  * SICP 교재
  * 실습에 사용할 플랫폼(공식적으론 [Scheme][Racket])
- 
+
+Complete Source Code from SICP 2nd Edition
+------------------------------------------
+[SICP Source Code]: https://mitpress.mit.edu/sicp/code/
+
 How to
 ------
 1. [github][github] 가입
