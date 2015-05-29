@@ -14,11 +14,11 @@ Requirements
 
 Complete Source Code from SICP 2nd Edition
 ------------------------------------------
-[SICP_Source_Code][SICP_Source_Code]
+[SICP Source Code](https://mitpress.mit.edu/sicp/code/)
 
 How to
 ------
-1. [github][github 2] 가입
+1. [github][github] 가입
     * 첫 화면에서 아래 Plans, Pricing and Signup 버튼 클릭
     * Plan & Pricing 화면에서 $0/mo Free for open source 란 Create a free account 버튼 클릭
     * user name, email, password를 등록합니다. 
@@ -49,7 +49,6 @@ How to
         $ git push origin master    
 
 [SICP]: http://mitpress.mit.edu/sicp/
-[SICP_Souece_Code]: https://mitpress.mit.edu/sicp/code/
 [lispkorea]: http://www.lispkorea.org
 [lispkorea]: http://groups.google.com/group/lisp-korea
 [github]:http://github.com
