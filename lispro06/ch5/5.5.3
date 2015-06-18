@@ -1,0 +1,63 @@
+# 5.5.3 조합 식 번역하기
+ 프로시저 호출 번역  
+ <연산자를 반복한다. 타깃은 proc이고 연결은 next이다.>
+ <피연산자를 계산(eval)하고 arg1에 피연산자의 리스트를 만든다>
+ <지정된 타깃과 연결로 프로시저 호출을 번역한다.>
+ 
+```scheme
+(define (compile-application exp target linkage)
+  (let ((proc-code (compile (operator exp) 'proc 'next))
+        (operand-codes
+         (map (lambda (operand) (compile operand 'val 'next))
+              (operands exp))))
+    (preserving '(env continue)
+     proc-code
+     (preserving '(proc continue)
+      (construct-arglist operand-codes)
+      (compile-procedure-call target linkage)))))
+```
+
+<마지막 피연산자를 번역하여 val 에 저장한다.>
+    (assign arg1 (op list) (reg val))
+<그 앞의 피연산자를 번역하여 val에 저장한다.>
+    (assign arg1 (op cons) (reg val) (reg arg1))
+    ...
+<마지막 피연산자를 번역하여 val에 저장한다.>
+    (assign arg1 (op cons) (reg val) (reg arg1))
+    
+피연산자가 없다면, 명령은 다음과 같다
+    (assign arg1 (const ()))
+    
+그렇지 않다면 compile-application이 제공하는 순서에 따라 피연산자 명령줄 리스트를 뒤집어야 한다.
+
+
+```scheme
+(define (construct-arglist operand-codes)
+  (let ((operand-codes (reverse operand-codes)))
+    (if (null? operand-codes)
+        (make-instruction-sequence '() '(argl)
+         '((assign argl (const ()))))
+        (let ((code-to-get-last-arg
+               (append-instruction-sequences
+                (car operand-codes)
+                (make-instruction-sequence '(val) '(argl)
+                 '((assign argl (op list) (reg val)))))))
+          (if (null? (cdr operand-codes))
+              code-to-get-last-arg
+              (preserving '(env)
+               code-to-get-last-arg
+               (code-to-get-rest-args
+                (cdr operand-codes))))))))
+(define (code-to-get-rest-args operand-codes)
+  (let ((code-for-next-arg
+         (preserving '(argl)
+          (car operand-codes)
+          (make-instruction-sequence '(val argl) '(argl)
+           '((assign argl
+              (op cons) (reg val) (reg argl)))))))
+    (if (null? (cdr operand-codes))
+        code-for-next-arg
+        (preserving '(env)
+         code-for-next-arg
+         (code-to-get-rest-args (cdr operand-codes))))))
+```
