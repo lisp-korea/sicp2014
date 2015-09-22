@@ -4,3 +4,41 @@
 http://googledevkr.blogspot.kr/2015/09/android60runtimepermission.html
 신고 기능 2.가.2 
 - 배달의 민족
+
+http://thdev.net/634
+https://developer.android.com/preview/features/runtime-permissions.html
+Permission Group	Permissions
+android.permission-group.CALENDAR	
+android.permission.READ_CALENDAR
+android.permission.WRITE_CALENDAR
+android.permission-group.CAMERA	
+android.permission.CAMERA
+android.permission-group.CONTACTS	
+android.permission.READ_CONTACTS
+android.permission.WRITE_CONTACTS
+android.permission.GET_ACCOUNTS
+android.permission-group.LOCATION	
+android.permission.ACCESS_FINE_LOCATION
+android.permission.ACCESS_COARSE_LOCATION
+android.permission-group.MICROPHONE	
+android.permission.RECORD_AUDIO
+android.permission-group.PHONE	
+android.permission.READ_PHONE_STATE
+android.permission.CALL_PHONE
+android.permission.READ_CALL_LOG
+android.permission.WRITE_CALL_LOG
+com.android.voicemail.permission.ADD_VOICEMAIL
+android.permission.USE_SIP
+android.permission.PROCESS_OUTGOING_CALLS
+android.permission-group.SENSORS	
+android.permission.BODY_SENSORS
+android.permission-group.SMS	
+android.permission.SEND_SMS
+android.permission.RECEIVE_SMS
+android.permission.READ_SMS
+android.permission.RECEIVE_WAP_PUSH
+android.permission.RECEIVE_MMS
+android.permission.READ_CELL_BROADCASTS
+android.permission-group.STORAGE	
+android.permission.READ_EXTERNAL_STORAGE
+android.permission.WRITE_EXTERNAL_STORAGE
